@@ -56,6 +56,8 @@ echo_camera();
 display_shafts = true;
 //Affiche le cycliste
 display_rider = false;
+//Affiche les roues (sinon modèle filaire)
+display_wheels = true;
 //Affiche la transmission
 display_transmission = false;
 //Affiche info et avertissements dans la console
@@ -227,13 +229,14 @@ module 3Dview () {
 	//ground
 	gray() 
 		cubex(wheel_base+1000, 1200, 1,-500);
+	//
 	w_track();
 	arrow();
 	all_wheels();
-	rear_shafts (display_shafts);
+	rear_shafts(display_shafts);
 	disp_rider();
 	disp_transmission();
-	steering(false, true, steering_rot);
+	steering(false,true,steering_rot);
 	t(500,-400)
 		print_info(30);
 } //3D view
@@ -253,12 +256,12 @@ module flat_view () {
 		//top view
 		t(-1800) {
 			steering(false, true, steering_rot);
-			rear_shafts (false);
+			rear_shafts(false);
 		}
 		//side view
 		t(-1800,700) r(-90) {
 			steering(false,true,steering_rot);
-			rear_shafts (false);
+			rear_shafts(false);
 			cubey(1800,10,d_line, 600);
 			cylz(d_line,front_wheel_hdia, 0,front_wheel_track/2,0, 6);
 		}
@@ -275,21 +278,21 @@ module flat_view () {
 	//fr::multiLine(["Vue perpendiculaire"," à l'axe du pivot."],32, false);
 }
 
-//--display transmission ------
+//--display transmission --------
 module disp_transmission () {
 	if (display_transmission)
 		t(BB_long_pos,0,BB_height)
 			pedals(crank_arm_length);
 }
 
-//-- display wheel track ---------
+//-- display wheel track --------
 module w_track () {
 		blue()
 		dmirrory() {
 			cubez(120,1,5, -60,front_wheel_track/2);
 		}
 }
-//-- display rider ---------------
+//-- display rider --------------
 module disp_rider (){
 	if(display_rider)
 		t(seat_front_distance,0,seat_height)
@@ -299,7 +302,7 @@ module disp_rider (){
 
 // Line wheel symbol
 module wheel_symb (dw=0, top_symb=true) {
-	if(view_type) {//view_type==0->3D
+	//if(view_type) {//view_type==0->3D
 		difference() {
 			cyly(-30,d_line, 0,0,0, 8);
 			cyly(-10,10, 0,0,0, 8);
@@ -313,10 +316,10 @@ module wheel_symb (dw=0, top_symb=true) {
 				dmirrorx()
 					cubex(-d_line,30,3, dw/2,0 ,0); 
 		}
-	}
+	//}
 }
 
-//-- display all wheels -----------
+//-- display all wheels -------
 module all_wheels () {
 	//front wheels
 	steer(steering_rot) 
@@ -324,21 +327,27 @@ module all_wheels () {
 	mirrory()
 		fwheel();
 		//front wheel shafts
-		front_wheel_shaft(display_shafts);	
-		
+		front_wheel_shaft(display_shafts);
 	//rear wheel(s)
 	dmirrory(rear_wheel_track) 
 		t(wheel_base,rear_wheel_track/2)
 			r(rear_camb_a)
 				tslz(rear_wheel_hdia)
-					wheel(rear_wheel_rim,rear_wheel_tire, shaft_width = 85, , spa=6.8);
+					if (display_wheels)
+						wheel(rear_wheel_rim,rear_wheel_tire, shaft_width = 85, , spa=6.8);
+					else 
+						wheel_symb(rear_wheel_hdia*2,true);
+						
 	
 	//spa angle parameter to adjust spoke spacing, should be user accessible ??
 	module fwheel() {
 		t(0,front_wheel_track/2)
 			r(camber_angle)
 				t(0,0,front_wheel_hdia)
-					wheel(front_wheel_rim,front_wheel_tire, shaft_width=66, spa=3.7);
+					if(display_wheels)
+						wheel(front_wheel_rim,front_wheel_tire, shaft_width=66, spa=3.7);
+					else 
+						wheel_symb(front_wheel_hdia*2,true);
 	}
 	//following double partly what is in steering() module  - for axis
 	module front_wheel_shaft (shaft=false) {
@@ -368,12 +377,12 @@ module rear_shafts (shaft=true) {
 					red()
 						if(rear_wheel_track) {
 							cyly(ds, -rear_shaft_lg);
-							wheel_symb(rear_wheel_hdia*2);
+							//wheel_symb(rear_wheel_hdia*2);
 						}
 						else {
 							cyly(-ds,135, 0,0,0, 6);
 							cyly(-d_line,150, 0,0,0, 6);
-							wheel_symb(rear_wheel_hdia*2);
+							//wheel_symb(rear_wheel_hdia*2);
 						}
 }
 
@@ -403,8 +412,9 @@ module hsteering (flat = false, srot=0) {
 			//front wheel shaft axis
 			r(camber_angle) {
 				cyly(d_line,shaft_length, -axis_offset,0,0, 6);
-				t(-axis_offset,shaft_length) 
-					wheel_symb(front_wheel_hdia*2, !flat);
+				t(-axis_offset,shaft_length)
+					if(view_type)
+						wheel_symb(front_wheel_hdia*2, !flat);
 			}
 			//king pin
 				r(0,caster_angle)
