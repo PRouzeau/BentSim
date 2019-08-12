@@ -1,0 +1,124 @@
+GÉOMETRIE d'UN TRICYCLE
+Cette application est prévue pour concevoir la géométrie d'un tricycle et sa 
+direction (ou celle d'un quad) mais elle peut être utilisée pour des machines
+motorisées plus importantes.
+Elle génère simplément l'épure et ne fait pas de calcul (sauf celui de la
+ chasse).
+La direction est conçue suivant l'épure d'Ackermann non corrigée.
+Après avoir défini la géométrie, vous devez projeter le modèle pour pouvoir
+l'exporter au format DXF, utilisable dans tout logiciel de CAO/DAO.
+
+Par défaut, le cycliste et la transmission ne sont pas affichés mais vous 
+pouvez les activer dans l'onlet [Affichage]. Ces éléments ne font pas partie
+de l'épure projetée.
+
+La projection se fait dans l'onglet [Affichage] en sélectionnant le
+ [type de vue] 'Projection'.
+Cecei nécessite un peu de temps de calcul.
+Une autre option est de projeter le modèle 3D sur son coté (ce qui peut
+inclure le cycliste et la transmission), mais le temps de calcul est assez
+important (quelques minutes).
+
+Il y a quelques élément de base de modélisation (les roues, le cycliste et la
+ transmission) mais cette application n'est pas prévue pour réaliser une 
+modélisation complète du vélo.
+Les roues sont des roues de vélo suivant le standard ETRTO.
+Les éléments de modélisation proviennent du modèle du Vélassi qui est lui un
+ modèle complet mais n'a pas encore été publié. Voir ma page internet:
+http://rouzeau.net/Velassi/Velassi
+La partie épure de la direction du tricycle/quad est partie d'une page
+ blanche.
+
+Cette application nécessite d’avoir installé ‘Openscad’ (un modeleur 3D
+ paramétrique gratuit), voir ici:
+* http://www.openscad.org/downloads.html#snapshots
+Les versions de développement 'snapshot versions' sont a préférer car 
+elles sont révisées souvent et elles sont fiables.
+La version minimale officielle d'Openscad à utiliser est la 2019.05 .
+
+
+*Le chemin complet du répertoire ou vous installez votre application 
+(Géométrie d'un tricycle ou tout autre application) ne doit comporter que 
+ des lettres ASCII, sans espaces ni lettres accentuées, pas de diacritiques
+ et pas d'autre jeu de caractères.
+Si ces conditions ne sont pas respectées, vous ne pourrez pas sauvegarder
+ les données.
+Depuis la version 2019.05, Customizer est activé par défaut:
+*Dans le menu [Vues], vous devez désormais avoir une option 
+ [Hide customizer], que vous devez décocher.
+
+*Notez que pour avoir l'interface de données 'Customizer' en Français,
+ vous devez utiliser la version Française "Trike_geometry_fr.scad".
+Pour lire les données avec la version anglaise, il faut renommer le 
+fichier "Trike_geometry_fr.json" en "Trike_geometry.json"
+
+*Dans le même menu [Vues] Vous préfererez cacher la fenêtre d'édition en 
+ cochant l'option [Cacher l'éditeur].
+
+*L'interface d’OpenScad est par défaut dans le langage local (tel que 
+ configuré sur votrre ordinateur). Pour désactiver: 
+ menu [Edition][Préférences], onglet [Avancé], décocher l'option (en bas)
+ [Activer la localisation de l'interface utilisateur 
+ (nécessite un redémarrage d'openSCAD)]. 
+
+*Après avoir chargé un programme, Customizer n'est pas encore disponible,
+ vous devez d'abord faire un "aperçu" de votre modèle avec la touche [F5] 
+ ou en cliquant la première icone sous la fenêtre de visualisation.
+
+*Dans l'écran de Customizer, sur la première ligne, sélectionner
+ [Description seulement], ce qui fera une interface nettement plus sobre. 
+
+*Toute modification d'un champ est validé par [entrée] ou en sélectionnant
+ un autre champ. Toute modification d'un champ entraîne automatiquement
+ une nouvelle prévisualisation.
+
+*Vous pouvez imposer une vue standard en activant une vue imposée dans le
+ menu [Caméra] en cochant [Imposer la position de la caméra] et en le 
+ décochant ensuite pour libérer le mouvement de la caméra.
+
+*Les images peuvent être exportées à partir d'une simple prévisualisation
+ [F5].
+
+*Vous ne pouvez pas exporter un fichier DXF a partir d'une prévisulisation,
+ il faut d'abord faire un rendu [F6].
+
+Notez que dans la projection de l'épure, la vue en bas à droite n'est pas
+ une vue de face mais une vue dans le plan passant par les articulation des
+ pivots.
+
+Quand vous êtes content de votre conception, vous pouvez l'enregistrer 
+comme un 'jeu de paramètres', utilisez le bouton [+] pour créer un nouveau
+ jeu, puis [enregistrer le jeu de paramètres] pour sauvegarder les
+ modifications ultérieures, que vous pourrez rappeler plus tard en
+ sélectionnant le jeu de paramètres dans le menu déroulant. 
+RIEN n'est sauvegardé automatiquement. 
+
+Si vous ne voyez pas les exemples dans les jeux de paramètres, voir plus
+ haut la note sur les caractères des répertoires.
+
+Notez que pour les variables avec des flèches de modifications
+ ('spinboxes'), quand vous cliquez sur le champ, vous pouvez alors modifier
+ la valeur avec la roulette de la souris.
+
+Copyright 2019 Pierre ROUZEAU, pseudo "PRZ"
+License du programme GPL V3
+License de la documentation cc BY-SA 4.0 et GFDL 1.2
+Cette application utilise la librairie OpenSCAD, jointe, mais si vous êtes
+ curieux les détails sont ici:
+https://github.com/PRouzeau/OpenScad-Library
+Elle utilise aussi un modèle de cycliste dérivé du modèle publié par le
+wiki openbike.org/python et profondément modifiée. Voir le fichier. 
+Ce modèle de cycliste nécessite des améliorations pour mieux prendre en
+compte la variabilité de la morphologie humaine.
+
+Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
+ modifier suivant les termes de la GNU General Public License telle que
+ publiée par la Free Software Foundation ; soit la version 3 de la
+ licence, soit (à votre gré) toute version ultérieure.
+Ce programme est distribué dans l'espoir qu'il sera utile, mais SANS
+ AUCUNE GARANTIE ; sans même la garantie tacite de QUALITÉ MARCHANDE
+ ou d'ADÉQUATION à UN BUT PARTICULIER. Consultez la GNU General Public
+ License pour plus de détails.
+Vous devez avoir reçu une copie de la GNU General Public License en
+ même temps que ce programme ; si ce n'est pas le cas, consultez
+ <http://www.gnu.org/licenses>.
