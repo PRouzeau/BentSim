@@ -239,43 +239,69 @@ module 3Dview () {
 	steering(false,true,steering_rot);
 	t(500,-400)
 		print_info(30);
-} //3D view
+}
 
+//== Flat view =================
 module flat_view () {
+	module p_arrow (ry=0,rz=0, tx = "") {
+		r(0,ry,rz) {
+			cubex(-100,5,5);
+			dmirrorz() 
+				r(0,15)
+					cubex(-27,5,4);
+			t(-75,0,12)
+				r(90)
+					linear_extrude (1)
+						text(tx, 32, $fn=16);
+		}
+	}
+	
 	projection() {
-		//w_track();
+		// Steering blueprint
 		r(0,90-caster_angle)
-			t(trail)
+			t(trail) {
 				steering(true);
-		//pivot
+				// Arrow
+				r(king_pin_angle)
+					t(0,front_wheel_track/2, 420) 
+						p_arrow(90,90, "A");
+			}
+		// Pivot
 		t(front_wheel_hdia+50,600)
 			r(king_pin_angle)
 				r(0,-caster_angle)
 					t(trail)
 						steering(true,false);
-		//top view
+		// Top view
 		t(-1800) {
 			steering(false, true, steering_rot);
 			rear_shafts(false);
 		}
-		//side view
+		// Side view
 		t(-1800,700) r(-90) {
 			steering(false,true,steering_rot);
 			rear_shafts(false);
 			cubey(1800,10,d_line, 600);
 			cylz(d_line,front_wheel_hdia, 0,front_wheel_track/2,0, 6);
+			// Arrows
+			tslz (front_wheel_hdia)
+				r(0, caster_angle) {
+					t(-70) p_arrow(0,0,"B");
+					tslz (200)
+						p_arrow(90,0,"A");
+				}
 		}
 	}
+		
+	//-- TEXT --------------------
 	t(-1000,-400)
 		print_info(30);
-	t(-1400,600)
+	t(-1500,630)
 		print_spec(30);
 	t(400,100)
-		multiLine(["View following a plane going"," through both kingpin axis"],32,false);
-	//fr::multiLine(["Vue suivant un plan","passant par les axes de pivot"],32,false);
+	multiLine(["Vue B"],32,false);
 	t(400,600)
-		multiLine(["View perpendicular"," to kingpin axis."],32, false);
-	//fr::multiLine(["Vue perpendiculaire"," à l'axe du pivot."],32, false);
+	multiLine(["Vue A"],32, false);
 }
 
 //--display transmission --------
@@ -671,10 +697,9 @@ module multiLine (lines, size=1000, large_first = true, always=false){
 
 module print_info (size = 30) {
 	multiLine(
-		["Trike geometry",
-	//fr::["Géometrie d'un tricycle",
+		["Géometrie d'un tricycle",
 "https://github.com/PRouzeau/Trike-geometry",
-	"App (c) Pierre ROUZEAU",
+	"(c) 2019 Pierre ROUZEAU",
 	"Licence GPL V3"
 	]
 	, size);
@@ -682,14 +707,12 @@ module print_info (size = 30) {
 
 module print_spec (size = 30) {
 	multiLine([
-	str("Project reference: ",proj_ref),
-	//fr::str("Référence projet: ",proj_ref),
-str("Roue avant: Jante ",front_wheel_rim, " Pneu: ",front_wheel_tire, " mm diam. ",front_wheel_hdia*2," mm"),
-str("Roue arrière: Jante ",rear_wheel_rim, " Pneu: ",rear_wheel_tire, " mm diam. ",rear_wheel_hdia*2," mm"),
-str("Voie avant: ",front_wheel_track," mm - Voie arrière: ",rear_wheel_track," mm"),
-str("Empattement: ",wheel_base," mm"),
-str("Angle du pivot de direction: ",headtube_angle, " °"),
-str("Déport roue avant: ", axis_offset,"mm  Chasse: ",r10(trail)," mm")
+	str("Référence projet: ",proj_ref),
+	str("Roue avant: Jante ",front_wheel_rim, " Pneu: ",front_wheel_tire, " mm diam. ",front_wheel_hdia*2," mm"),
+	str("Roue arrière: Jante ",rear_wheel_rim, " Pneu: ",rear_wheel_tire, " mm diam. ",rear_wheel_hdia*2," mm"),
+	str("Voie avant: ",front_wheel_track," mm - Voie arrière: ",rear_wheel_track," mm"),
+	str("Empattement: ",wheel_base," mm"),
+str("Angle du pivot de direction: ",headtube_angle, "°  ,déport roue: ", axis_offset,"mm  Chasse: ",r10(trail),"mm")
 	]
 	,size,false);
 }
