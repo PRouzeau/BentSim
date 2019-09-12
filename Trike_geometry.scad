@@ -76,7 +76,7 @@ echo_camera();
 /*fr:[Affichage]*/ 
 /*[Display]*/ 
 //fr:Affiche les arbres (sinon seulement les axes)
-//Display shafts (alse only axis)
+//Display shafts (else only axis)
 display_shafts = true;
 //fr:Affiche le cycliste
 //Display rider
@@ -482,12 +482,12 @@ module rear_shafts (shaft=true) {
 					red()
 						if(rear_wheel_track) {
 							cyly(ds, -rear_shaft_lg);
-							//wheel_symb(rear_wheel_hdia*2);
+							wheel_symb(rear_wheel_hdia*2);
 						}
 						else {
 							cyly(-ds,135, 0,0,0, 6);
 							cyly(-d_line,150, 0,0,0, 6);
-							//wheel_symb(rear_wheel_hdia*2);
+							wheel_symb(rear_wheel_hdia*2);
 						}
 }
 
