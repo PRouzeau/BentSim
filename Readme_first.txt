@@ -30,7 +30,9 @@ This application need to have prealably installed OpenSCAD (a free parametric
 * http://www.openscad.org/downloads.html#snapshots
 Snapshot versions of OpenScad are recommended as they are frequently updated
  and are reliable.
-You shall at least use the last official version (2019.05).
+*You shall at least use the last official version (2019.05).
+*All files shall be installed in a directory on your computer, though you
+ don't really need the 'Images' directory to run the app.
 
 *The complete path of the directory where you install this application
  (Trike geometry or any other) shall only use ASCII characters, without
@@ -52,13 +54,26 @@ Since the 2019.05 version, Customizer is automatically activated.
 
 *After program loading, Customizer is not activated, you need first to do a
  preview, either with [F5] key or by clicking the first icon below the view.
+ 
+*Previewing run the default example, so you shall have a model shown in the
+ viewing windows (after clicking [view all] button: third on bottom line)
+ 
+*If you don't see anything after a preview, there is an installation problem,
+ so check that you have downloaded all files and that the directory name is
+ compliant with the specification as described in above paragraph.
+ There shall be no error message in the console window.
+ 
 *Any field modification is validated after an [enter] or after a move to
  another field. A modified field validation automatically run a new preview.
+ 
 *You may want to impose camera position by ticking [Dictate the camera position],
  then untick it to free the camera (in the [Display] tab).
-*Images can be exported from a simple preview ([F5])
+ 
+*Images can be exported from a simple preview ([F5]) with the command
+ [File][Export][export as image].
+
 *You cannot export DXF file from a preview, you need to do a render first ([F6]),
-directly or after a preview.
+directly or after a preview, then do [File][Export][export as DXF].
 
 Note that in the projection view, the view on the right bottom is not the front 
 view but a view of the plane going through king pin axis.

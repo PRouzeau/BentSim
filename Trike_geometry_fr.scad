@@ -1,12 +1,13 @@
 
 
 /*
-Géométrie et direction d'un tricycle ou d'un quadricycle
+Géométrie et direction d'un tricycle à direction avant ou d'un quadricycle
 */
 // Copyright 2019 Pierre ROUZEAU,  AKA PRZ
 // Program license GPL 4.0
 // documentation licence cc BY-SA 4 and GFDL 1.2
 // First version: 0.0 - August, 10, 2019
+// revised October, 4, 2019
  
 /*
   Cette application utilise ma librairie OpenSCAD, jointe, mais vous pouvez trouver des détails sur celle-ci ici:
@@ -15,12 +16,12 @@ Géométrie et direction d'un tricycle ou d'un quadricycle
 - Le modèle du cycliste vient d'une autre source, voir les commentaires dans son fichier.
 
 Il y a deux types d'affichage possible
-- La vue 3D, qui peut être xeportée en stl (après calcul du rendu)
+- La vue 3D, qui peut être exportée en stl (après calcul du rendu)
 - La projection à plat des axes de direction (suivant un plan passant par les axes), qui peut être exportée comme un fichier DXF (fichier de dessin). Dans cette vue il y a aussi une projection du pivot dans un plan perpendiculaire à l'axe du pivot, ainsi qu'une vue de dessus et de coté.
 
-	Dans cette vue, il peut être préférable de supprimer l'afficache des axes (onglet affichage).
+	Dans cette vue, il peut être préférable de supprimer l'affichage des axes (onglet affichage dans le panneau de personnalisation).
 	
-	Il n'y a pas simulation complete de la rotation des roues, seule la roue droite peut tourner pour vérifier les encombrements et l'élevation de la roue.
+	Il n'y a pas de simulation complète de la rotation des roues, seule la roue droite peut tourner pour vérifier les encombrements et l'élevation de la roue.
 
 Il faut noter que le calcul de rendu est assez long avec OpenScad.
 	La projection prend aussi un petit moment à calculer.
@@ -42,8 +43,11 @@ Dictate_camera_position=false;
 // The camera variables shall NOT be included in a module - a module CANNOT export variables
 //Vue de dessus
 Top_view = false;
+
+//Impose camera if rotation vector is default
+Cimp = Dictate_camera_position||Top_view||$vpr==[55,0,25]; 
+
 //Distance de la caméra
-Cimp = Dictate_camera_position||Top_view; 
 $vpd=Cimp?Top_view?6000:4000:$vpd; 
 //Vecteur de déplacement
 $vpt=Cimp?[470,80,580]:$vpt; 
@@ -403,12 +407,12 @@ module rear_shafts (shaft=true) {
 					red()
 						if(rear_wheel_track) {
 							cyly(ds, -rear_shaft_lg);
-							//wheel_symb(rear_wheel_hdia*2);
+							wheel_symb(rear_wheel_hdia*2);
 						}
 						else {
 							cyly(-ds,135, 0,0,0, 6);
 							cyly(-d_line,150, 0,0,0, 6);
-							//wheel_symb(rear_wheel_hdia*2);
+							wheel_symb(rear_wheel_hdia*2);
 						}
 }
 
@@ -557,13 +561,6 @@ module pedals (manlength=170, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot
 	dmirrory()
 		cyly(41,2,0,34);
 	}
-	/*check diam
-	check()
-		diff() {
-			cyly(-(manlength*2+40),80);
-			cyly(-(manlength*2+35),90);
-		}
-	*/
 	module crank_arm (cr2, ang) {
 		color (c_alu) {
 			//shaft
@@ -603,20 +600,11 @@ module pedals (manlength=170, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot
 	//chain
 	mlg = top_lg; // top chainring to idler
 	mlg2 = bot_lg; // bottom chain length
-	//arlg = 385; //top
-	//arlg2 = 460; //bottom
-	//fda = (folded_wheel||stored_pos)?folding_angle-10:rfa-12;
-	//echo(fda=fda);
-	//sig = fda<0?-1:1;
-	//rad = fda<0?-28:id_rad;
-	//modsp = -2.5;
 	modsp = 0;
 	color (c_steel) {
 	r(0,top_ang) // chainring to idler
 		cylx(10,mlg,0,-chainline_position,dch/2); 
-			//tb_xz(10,rad,sig*(25.8+fda+modsp))
-			//idler to sprocket
-			//cylx(10,-arlg);
+
 	
   //direct chain (over double wheel tensioner)
 	r(0,bot_ang)
@@ -650,28 +638,10 @@ module tb_yx (dtube=25,radius=100,ang=90) {
 	t(dx,dy) rotz(sang) children();
 }
 
-module tb_xy (dtube=25,radius=100,ang=90) {
-	rotate([0,0,90])
-		tb_yx(dtube,radius,ang)
-			rotate([0,0,-90]) children();
-}
-
 module tb_xz (dtube=25,radius=100,ang=90) {
 	r(90) rotz(90)
 		tb_yx(dtube,radius,ang)
 			rotz(-90) r(-90) children();
-}
-
-module tb_zy (dtube=25,radius=100,ang=90) {
-	r(0,90) rotz(90)
-		tb_yx(dtube,radius,ang)
-			rotz(-90) r(0,-90) children();
-}
-
-module tb_zx (dtube=25,radius=100,ang=90) {
-	r(90)
-		tb_yx(dtube,radius,ang)
-			r(-90) children();
 }
 
 //-- Information text -------------

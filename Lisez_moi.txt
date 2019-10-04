@@ -35,7 +35,9 @@ Cette application nécessite d’avoir installé ‘Openscad’ (un modeleur 3D
 Les versions de développement 'snapshot versions' sont a préférer car 
 elles sont révisées souvent et elles sont fiables.
 La version minimale officielle d'Openscad à utiliser est la 2019.05 .
-
+Vous devez installer tous les fichiers dans un répertoire sur votre
+ ordinateur, bien que vous n'ayez pas vraiment besoin du répertoire
+ 'Images' pour faire fonctionner l'application.
 
 *Le chemin complet du répertoire ou vous installez votre application 
 (Géométrie d'un tricycle ou tout autre application) ne doit comporter que 
@@ -64,6 +66,15 @@ fichier "Trike_geometry_fr.json" en "Trike_geometry.json"
 *Après avoir chargé un programme, Customizer n'est pas encore disponible,
  vous devez d'abord faire un "aperçu" de votre modèle avec la touche [F5] 
  ou en cliquant la première icone sous la fenêtre de visualisation.
+ 
+*La prévisualisation lance l'exemple par défaut, aussi vous devez voir un
+ modèle dans la fenêtre de visualisation (après avoir cliqué le bouton
+ [voir tout]: le troisième de la ligne du bas)
+ 
+*Si après une prévisualisation vous ne voyez rien, c'est que vous avez un
+ problème d'installation, vérifiez que vous avez chargé tous les fichiers
+ et que le nom du répertoire est conforme a ce qui est indiqué plus haut.
+ Il ne doit pas y avoir de message d'erreur dans la fenêtre de console.
 
 *Dans l'écran de Customizer, sur la première ligne, sélectionner
  [Description seulement], ce qui fera une interface nettement plus sobre. 
@@ -77,10 +88,11 @@ fichier "Trike_geometry_fr.json" en "Trike_geometry.json"
  décochant ensuite pour libérer le mouvement de la caméra.
 
 *Les images peuvent être exportées à partir d'une simple prévisualisation
- [F5].
+ ([F5]) avec la commande [Fichier][Exporter][Exporter comme image].
 
 *Vous ne pouvez pas exporter un fichier DXF a partir d'une prévisulisation,
- il faut d'abord faire un rendu [F6].
+ il faut d'abord faire un rendu [F6] puis lancer la commande 
+ [Fichier][Exporter][Exporter comme DXF].
 
 Notez que dans la projection de l'épure, la vue en bas à droite n'est pas
  une vue de face mais une vue dans le plan passant par les articulation des
