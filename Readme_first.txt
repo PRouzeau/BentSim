@@ -34,10 +34,26 @@ Snapshot versions of OpenScad are recommended as they are frequently updated
 *All files shall be installed in a directory on your computer, though you
  don't really need the 'Images' directory to run the app.
 
+*How to install the application ?
+At address https://github.com/PRouzeau/Trike-geometry under gray line, on
+the right there is a button [Clone or Download] which open a small window
+where you will find a link [Download ZIP], to click.
+This open a window 'Downloading...' with two buttons proposing to 'sign up'
+or 'sign in'. You don't need either. In parallel, your browser download the
+file 'Trike-geometry-master.zip' and may propose to record it somewhere (this
+depends from your browser config). Open the zip file, it includes a directory
+'Trike-geometry-master', its content shall be installed anywhere on your
+computer (however, look below paragraph for restriction on the complete
+ directory name).
+ 
 *The complete path of the directory where you install this application
  (Trike geometry or any other) shall only use ASCII characters, without
  spaces, accented letters, any diacritic, umlaut or other character set.
 Without these conditions, Customizer dataset cannot be saved.
+ 
+*To start the application, click on the file 'Trike_geometry.scad'.
+This will open OpenSCAD with application loaded. Click on [F5] to run
+default example.
 
 Since the 2019.05 version, Customizer is automatically activated.
 

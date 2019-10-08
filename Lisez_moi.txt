@@ -39,13 +39,29 @@ Vous devez installer tous les fichiers dans un répertoire sur votre
  ordinateur, bien que vous n'ayez pas vraiment besoin du répertoire
  'Images' pour faire fonctionner l'application.
 
+*Comment installer l'application ?
+A l'adresse https://github.com/PRouzeau/Trike-geometry
+sous le trait gris, à droite, il y a un bouton [Clone or Download] qui ouvre
+une petite fenêtre ou il y a un lien [Download ZIP], que l'on clique.
+Ceci ouvre une fenêtre 'Downloading...' avec deux boutons proposant de 
+s'inscrire, on ne clique rien. En parallèle, votre navigateur télécharge
+le fichier 'Trike-geometry-master.zip' en vous proposant éventuellement 
+d'indiquer ou il doit être téléchargé. Le fichier zip contient un répertoire
+'Trike-geometry-master' dont le contenu doit être installé dans un
+répertoire de votre choix, n'importe ou sur votre machine (voir le paragraphe
+ci-dessous pour les restrictions sur le nom complet du répertoire)
+ 
 *Le chemin complet du répertoire ou vous installez votre application 
 (Géométrie d'un tricycle ou tout autre application) ne doit comporter que 
  des lettres ASCII, sans espaces ni lettres accentuées, pas de diacritiques
  et pas d'autre jeu de caractères.
-Si ces conditions ne sont pas respectées, vous ne pourrez pas sauvegarder
+ Si ces conditions ne sont pas respectées, vous ne pourrez pas sauvegarder
  les données.
-Depuis la version 2019.05, Customizer est activé par défaut:
+*Pour démarrer l'application, cliquez sur le fichier 'Trike_geometry_fr.scad'
+ Qui va ouvrir OpenSCAD avec l'application chargée. Cliquer sur [F5] va lancer
+ l'exemple par défaut.
+ 
+Depuis la version 2019.05 d'OpenSCAD, Customizer est activé par défaut:
 *Dans le menu [Vues], vous devez désormais avoir une option 
  [Hide customizer], que vous devez décocher.
 
