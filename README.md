@@ -10,5 +10,5 @@ Note that this application also exist in french, see "Lisez_moi.txt"
 
 To install OpenSCAD applications, see http://rouzeau.net/Print3D/OpenSCADApplications
 
-Pour installer les applications OpenSCAD, voir  http://rouzeau.net/OpenSCAD/Applications
+Pour installer les applications OpenSCAD, voir http://rouzeau.net/OpenSCAD/Applications
  
