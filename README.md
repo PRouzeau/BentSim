@@ -1,5 +1,5 @@
 # Trike geometry
-Warning: note that there is a mistake in the steering arm angle on the drawing. A new version and extended version of this program is on the way.
+Warning: note that there is a mistake in the steering arm angle on the drawing. A new and extended version of this program is on the way.
 
 This OpenScad application is intended to make blueprints of a trike (or quad)
  geometry and steering.
