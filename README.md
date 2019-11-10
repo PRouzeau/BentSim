@@ -1,6 +1,7 @@
 # BentSim
 This OpenScad application is intended to make blueprints and 3D model of
  a recumbent bike, trike or quadricycle with full geometry and steering.
+
 It is mainly thought for human powered cycles, but you can also use it
  for larger motorised machines.
 See the 'Images' directory for output examples
@@ -18,3 +19,4 @@ En Français:
 Il existe une version Française, voir "Lisez_moi.txt"
 Pour installer les applications OpenSCAD, voir http://rouzeau.net/OpenSCAD/Applications
 Manuel d'exploitation de cette application, voir http://rouzeau.net/OpenSCAD/BentSim D 
+
