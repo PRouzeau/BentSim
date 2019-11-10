@@ -255,7 +255,7 @@ module tenonxy (slotlength, interval, totlength, thkplate, height) { //creates t
 	cfl=(totlength<0)?-1:1;
 	mvh= (height<0)?height:-0.2;
 	mvl= (totlength<0)?-sll+holeplay/2:holeplay/2;
-	lduplx (interval, cfl*(abs(totlength)-sll)) 
+	lduplx(interval, cfl*(abs(totlength)-sll)) 
 		tsl(mvl,0,mvh) //-0.2 to avoid merging surface-no play as //cuts will equal height
 			cube([sll-holeplay, thkplate, abs(height)+0.2]);
 }

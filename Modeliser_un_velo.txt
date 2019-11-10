@@ -1,0 +1,110 @@
+Modéliser un vélo couché  (c) Pierre ROUZEAU CC BY-SA 4.0
+Pour pouvoir modéliser un vélo, il faut d'abord avoir installé l'application
+BentSim en suivant les recommandations du fichier 'Lisez_moi.txt' et de la
+page Internet  http://rouzeau.net/OpenSCAD/Applications
+
+Pour modéliser un vélo, il est recommandé de partir d'un des exemples.
+Une fois choisi votre exemple, créez un nouveau jeu de données en appuyant
+sur le bouton [+] du panneau de personnalisation (en haut). Donnez un nom à
+votre modèle (vous pourrez le changer à tout moment).
+Ensuite vous pouvez modifiez tous les paramètres, sans oubliez de les
+enregistrer de temps à autre avec [Enregistrer jeu param.] Rien ne vous
+empêche de modifier les exemples mais les valeurs d'origines seront alors
+perdues. Avant d'avoir enregistré, vous pouvez revenir aux paramètres de
+l'enregistrement précédent avec [Réinitialiser]. Une fois enregistré, les
+nouvelles données deviennent le point de départ.
+
+Les dimensions principales sont dans l'onglet [Général]. Il faut noter que la
+taille des pneus est prise en compte dans la hauteur de l'axe de roue et que
+modifier la taille du pneu change la géométrie du vélo. Vous pouvez définir
+une taille de pneu maximum qui ne joue pas sur la géométrie mais sera
+affichée avec les surfaces de contrôle.
+
+Les dimensions du cycliste et sa position sont définies dans l'onglet
+'Cycliste'. On peut définir un deuxième cycliste qui peut être affiché en
+même temps que le premier. Selon le type de vélo, on choisit soit de déplacer
+le deuxième cycliste le long d'une 'glissière de siège' ou de déployer une
+bôme et un deuxième pédalier sera affiché en complément du premier.
+Ces deux actions peuvent être simultanées. L'angle de déploiement de la bome
+est celui de la poutre en arrière du pédalier défini dans l'onglet [Cadre].
+
+L'onglet [Affichage] permet de sélectionner les parties que l'on souhaite
+afficher. En sus des élément mécaniques et du cycliste, on peut afficher les
+lignes d'épures. L'affichage des surfaces de controle trace des surfaces
+permettant de valider la géométrie (plan dans l'axe de direction, volume
+occupé par la roue lorsque l'on tourne le guidon, pneus et garde-boues de
+taille maximum, cylindre montrant la position des articulations de V-brake).
+
+L'onglet [Camera] vous permet de forcer l'affichage suivant une perspective
+préenregistrée ou un axe. Désactivez cette option immédiatement après usage,
+sinon chaque réaffichage reviendra a la même vue.
+
+Le cadre
+L'onglet [Cadre] Permet de définir un cadre monotube (circulaire ou
+rectangulaire). On sélectionne un tube rectangulaire en lui donnant une
+hauteur (sinon c'est un tube rond). Le cadre comporte deux ou trois sections
+droites en arrière du boitier de pédalier et une section en avant.
+Sur un cadre  en tube circulaire, les sections droites sont jointes par un
+coude dont le rayon est paramétré. Les tubes rectangulaires sont coupés à
+l'angle.
+En l'absence de section a l'avant du boitier de pédalier, la section
+précédant le boitier est considérée comme une bôme ajustable.
+Passer la longueur d'une section droite à 0 la supprime et l'angle à 0
+supprime le coude.
+Il y a la possibilité d'ajouter un tube de renfort qui part depuis la 
+deuxième section en arrière du boitier de pédalier.
+Un renfort au niveau du tube de direction est proposé en option.
+Il faut aussi définir longeur et angle des bases et des haubans.
+
+La transmission
+l'onglet [Transmission] permet de définir la taille du plateau (il n'y en a
+qu'un) et la ligne de chaîne. La ligne de chaîne se définit depuis le plateau
+avant et depuis le pignon arrière. Il y a des poulies associées aux chaines
+partant du plateau. Ces poulies peuvent être sur un axe commun et la chaine
+peut passer dessus ou dessous. Les chaines partant de l'arrière sont ajustées
+manuellement pour rejoindre les poulies. Si on veut une ligne de chaîne
+directe, donner une longueur nulles aux chaines avant, ce qui supprimera les
+poulies et alllongez les chaines arrières jusqu'au plateau.
+
+
+L'aspect visuel
+L'onglet [Cosmétique] permet de donner un aspect plus réaliste à votre
+modèle en indiquant la présence d'un drapeau, d'un phare avant et en
+choisissant le nombre de rayons de chaque roue, en ajustant leur position et
+en définissant l'angle de départ et le secteur des garde-boues.
+
+Le choix des couleurs
+l'onglet [Couleurs] permet de définir les couleurs des éléments du vélo et
+des cyclistes. Le nom des couleurs est celui des couleurs web HTML que l'on
+peut trouver ici: https://fr.wikipedia.org/wiki/Couleur_du_Web
+Attention, les couleurs des cyclistes sont définies dans un tableau, il faut
+respecter guillemets, virgules et crochets. 
+
+Sélection de certains éléments
+Beaucoup d'éléments ne sont affichés que s'ils ont une dimension (tube à
+l'avant du boitier de pédalier, tube de renfort du cadre, garde-boues,
+poulies de chaîne) et les feux ne sont affichés que si ils ont une couleur.
+
+Exportation vers un fichier externe
+Dans l'onglet [Affichage] on peut choisir les projections que l'on va
+exporter vers d'autres logiciels. La projection de l'épure ne tient pas
+compte des éléments sélectionnés pour l'affichage sauf l'affichage des arbres
+que vous préfèrerez souvent désactiver pour une meilleure lisibilité.
+Par contre, les autres projections prennent en compte tout ce qui est
+affiché. Comme le calcul de ces projections prend un certain temps, on
+sélectionnera éventuellement uniquement les éléments les plus importants
+(cadre). Le calcul des roues notamment prend un peu de temps.
+La prévisualisation qui est faite après toute modification de variable ne
+permet pas d'exporter un fichier, il faut d'abord effectuer un calcul de
+'rendu' en appuyant sur [F6] ou sur le bouton dédié. Il est très recommandé
+de sauvegarder les données avec [Enregistrer jeu param.] avant tout calcul de
+rendu. Les données ne sont JAMAIS sauvegardées automatiquement.
+Une fois le calcul de rendu effectué, on peut exporter un fichier au format
+'DXF' (format d'exportation AutoCAD) qui est accepté par la quasi-totalité
+des loficiels de CAO.
+Ceci nse fait avec [Fichier][Exporter][Exporter comme DXF]
+On peut aussi effectuer une exportation du volume (sans les couleurs) au
+format 'STL' en ayant préalablement effectué un rendu de la vue 3D. Il existe
+une possibilité théorique d'exporter le modèle 3D vers FREECAD avec le
+format de fichier 'CSG' mais actuellement FREECAD a divers problèmes de
+gestion de ce format (mais ceci pourrait évoluer).

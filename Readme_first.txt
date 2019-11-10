@@ -1,13 +1,22 @@
-TRIKE GEOMETRY
-This application is intended to design a trike (or quad) geometry and steering.
-It is mainly studied for human powered cycles, but you can also use it
- for larger motorised machines.
-It simply generate the blueprint and no calculations (except trail) are done.
-Note that this application also exist in french, see "Lisez_moi.txt".
+GEOMETRY AND MODELING OF A RECUMBENT
+This application is made to design the geometry of a recumbent
+bicycle, tricycle or quadricycle and in particular its steering blueprint.
+It simply generates the blueprint and does not make any calculations (except for
+the trail and "wheel flop").
+The steering is designed according to pure Ackermann geometry.
+This application uses OpenSCAD as a visualization engine.
+After defining the geometry, you must project the model in order to be able to
+export it in DXF format, usable in any CAD software.
 
-Steering is designed with pure Ackermann geometry without compensation.
-After defining the geometry, you have to project the model on planes to be
- able to export drawings in DXF format to be used in any CAD.
+It is also possible to make a relatively complete visual model with a single
+tube frame. This model can be exported as a simple volume (without colors) in
+stl format.
+You can also project all or part of the model in 2D and export these 2D views
+in DXF format. Typically, we will make a projection of the frame.
+
+The size of the rider's model can vary and for the same size, the proportion
+between the length of the legs and the length of the torso is adjustable.
+Two sizes of riders can be displayed simultaneously on the model.
 
 By default, rider and transmission are not shown, you can display them in
  [Display] tab. They will be removed when projecting the geometry blueprint.
@@ -17,8 +26,8 @@ This requires some time to be calculated.
 Another option is to project the 3D model sideview (which can include rider
 and transmission), but the calculation time is significant (a few minutes).
 
-There are basic element for modeling (wheels, rider and transmission)
- but this program is not intended as a full fledged cycle modeler.
+There are basic element for modeling (wheels, rider, frame, transmission and
+steering) but this program is not intended as a full fledged cycle modeler.
 Wheels are bicycle wheels according ETRTO standard.
 Most of the modelling stuff originate from my Velassi recumbent model which
  is a much more complete model, but not yet published. See my webpage:

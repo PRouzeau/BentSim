@@ -1,33 +1,44 @@
-GÉOMETRIE d'UN TRICYCLE
-Cette application est prévue pour concevoir la géométrie d'un tricycle et sa 
-direction (ou celle d'un quad) mais elle peut être utilisée pour des machines
-motorisées plus importantes.
+GÉOMETRIE ET MODELISATION d'UN VÉLO COUCHÉ
+Cette application est prévue pour concevoir la géométrie d'un vélo couché 
+bicycle, tricycle ou quadricycle et en particulier son épure de direction.
 Elle génère simplément l'épure et ne fait pas de calcul (sauf celui de la
- chasse).
+ chasse et du 'basculement de roue').
 La direction est conçue suivant l'épure d'Ackermann non corrigée.
+Cette application utilise OpenSCAD comme moteur de visualisation.
 Après avoir défini la géométrie, vous devez projeter le modèle pour pouvoir
 l'exporter au format DXF, utilisable dans tout logiciel de CAO/DAO.
 
-Par défaut, le cycliste et la transmission ne sont pas affichés mais vous 
-pouvez les activer dans l'onlet [Affichage]. Ces éléments ne font pas partie
-de l'épure projetée.
+Il est aussi possible de faire un modèle visuellement relativement complet
+avec un châssis du type 'monopoutre'. Ce modèle peut être exporté sous forme
+d'un volume simple (sans couleurs) au format 'stl'
+On peut aussi projeter tout ou partie du modèle en 2D et exporter ces vues 2D
+au format DXF. Typiquement, on fera une projection du cadre.
 
-La projection se fait dans l'onglet [Affichage] en sélectionnant le
- [type de vue] 'Projection'.
+La taille du modèle de cycliste peut varier et pour une même taille, la
+proportion entre la longueur des jambes et celle du buste est ajustable.
+Deux tailles de cyclistes peuvent être affichées simultanément sur le modèle.
+
+Sur la version par défaut, le cycliste et la transmission ne sont pas affichés
+mais vous pouvez les activer dans l'onlet [Affichage]. Ces éléments ne font
+pas partie de l'épure projetée.
+
+La projection de l'épure se fait dans l'onglet [Affichage] en sélectionnant
+le [type de vue] 'Projection de l'épure'.
 Cecei nécessite un peu de temps de calcul.
-Une autre option est de projeter le modèle 3D sur son coté (ce qui peut
-inclure le cycliste et la transmission), mais le temps de calcul est assez
-important (quelques minutes).
+Une autre option est de projeter le modèle 3D latéralement, de face ou de
+dessus (ce qui peut inclure le cycliste et la transmission), mais le temps
+de calcul est assez important (quelques minutes) et on peut éventuellement se
+limiter à la projection du cadre.
 
-Il y a quelques élément de base de modélisation (les roues, le cycliste et la
- transmission) mais cette application n'est pas prévue pour réaliser une 
-modélisation complète du vélo.
+Il y a les éléments de base d'un modèle 3D (roues, cycliste, cadre,
+transmission et direction) mais ce programme n'est pas prévu pour une
+simulation de détail d'un vélo.
 Les roues sont des roues de vélo suivant le standard ETRTO.
 Les éléments de modélisation proviennent du modèle du Vélassi qui est lui un
- modèle complet mais n'a pas encore été publié. Voir ma page internet:
+modèle complet mais n'a pas encore été publié. Voir ma page internet:
 http://rouzeau.net/Velassi/Velassi
-La partie épure de la direction du tricycle/quad est partie d'une page
- blanche.
+La partie épure de la direction du tricycle/quad a été programmée à partir
+d'une page blanche.
 
 Cette application nécessite d’avoir installé ‘Openscad’ (un modeleur 3D
  paramétrique gratuit), voir ici:
@@ -40,14 +51,14 @@ Vous devez installer tous les fichiers dans un répertoire sur votre
  'Images' pour faire fonctionner l'application.
 
 *Comment installer l'application ?
-A l'adresse https://github.com/PRouzeau/Trike-geometry
+A l'adresse https://github.com/PRouzeau/BentSim
 sous le trait gris, à droite, il y a un bouton [Clone or Download] qui ouvre
 une petite fenêtre ou il y a un lien [Download ZIP], que l'on clique.
 Ceci ouvre une fenêtre 'Downloading...' avec deux boutons proposant de 
 s'inscrire, on ne clique rien. En parallèle, votre navigateur télécharge
-le fichier 'Trike-geometry-master.zip' en vous proposant éventuellement 
+le fichier 'BentSim-master.zip' en vous proposant éventuellement 
 d'indiquer ou il doit être téléchargé. Le fichier zip contient un répertoire
-'Trike-geometry-master' dont le contenu doit être installé dans un
+'BentSim-master' dont le contenu doit être installé dans un
 répertoire de votre choix, n'importe ou sur votre machine (voir le paragraphe
 ci-dessous pour les restrictions sur le nom complet du répertoire)
  
@@ -57,7 +68,7 @@ ci-dessous pour les restrictions sur le nom complet du répertoire)
  et pas d'autre jeu de caractères.
  Si ces conditions ne sont pas respectées, vous ne pourrez pas sauvegarder
  les données.
-*Pour démarrer l'application, cliquez sur le fichier 'Trike_geometry_fr.scad'
+*Pour démarrer l'application, cliquez sur le fichier 'BentSim_fr.scad'
  Qui va ouvrir OpenSCAD avec l'application chargée. Cliquer sur [F5] va lancer
  l'exemple par défaut.
  
@@ -66,9 +77,9 @@ Depuis la version 2019.05 d'OpenSCAD, Customizer est activé par défaut:
  [Hide customizer], que vous devez décocher.
 
 *Notez que pour avoir l'interface de données 'Customizer' en Français,
- vous devez utiliser la version Française "Trike_geometry_fr.scad".
+ vous devez utiliser la version Française "BentSim_fr.scad".
 Pour lire les données avec la version anglaise, il faut renommer le 
-fichier "Trike_geometry_fr.json" en "Trike_geometry.json"
+fichier "BentSim_fr.json" en "BentSim.json"
 
 *Dans le même menu [Vues] Vous préfererez cacher la fenêtre d'édition en 
  cochant l'option [Cacher l'éditeur].
