@@ -21,10 +21,10 @@ function tire_diam (rim=559, tire=40) = rim+2*tire+4;
 //-- spoked wheel ---------------------
 module wheel (rim=559, tire=40, hubdia=60, hubwidth=60, spa=7.5, spoke_nbr=36, shaft_width = 140, clr_rim= [0.8,0.8,0.8], clr_tire=[0.4,0.4,0.4]) {
 	wh_d=rim+2*tire+4; 
-	//echo ("wheel diam",wh_d);
+	//becho("wheel diam",wh_d);
 	spd = 2.2; // spoke diameter
 	spr = hubdia/2+8; // spoke radius
-	echo (spoke_nbr = spoke_nbr);
+	//becho("spoke_nbr", spoke_nbr);
 	rpt_spoke = spoke_nbr/4;
 	spoke_ang = 360/rpt_spoke;
 	check()
@@ -89,7 +89,7 @@ module wheel (rim=559, tire=40, hubdia=60, hubwidth=60, spa=7.5, spoke_nbr=36, s
 module fender (wheel_rim = 559, tire_w = 47, front_angle=8, rear_angle=170, wire_space=110, clr_fender="black") {
 	fender_dia = tire_w+26;
 	angtot = rear_angle-front_angle;
-	echo (angtot=angtot);
+	//becho("fender angtot",angtot);
 	wheel_dia = tire_diam (wheel_rim, tire_w);
 	if(front_angle!=0) {
 		color(clr_fender)
@@ -331,7 +331,6 @@ module front_light (st_ang=0, steer_bracket=0, clr = "black"){
 //=== Miscellaneous utilities ===
 //tube bend AND displacement
 module tb_yx (dtube=25,radius=100,ang=90, prec=24) {
-	//echo("bend");
 	sang = radius<0?ang:-ang;
 	dx=-(1-cos(sang))*-radius;
 	dy=sin(sang)*-radius;
