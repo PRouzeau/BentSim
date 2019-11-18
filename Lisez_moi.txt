@@ -138,6 +138,12 @@ Si vous ne voyez pas les exemples dans les jeux de paramètres, voir plus
 Notez que pour les variables avec des flèches de modifications
  ('spinboxes'), quand vous cliquez sur le champ, vous pouvez alors modifier
  la valeur avec la roulette de la souris.
+ 
+Pour exporter un par un ensemble de données de votre Customizer et le transférer à quelqu'un d'autre ou
+pour sauvegarder vos dessins avant une mise à jour, il y a maintenant la possibilité d'exporter
+et importer un ensemble de données individuelles avec des macros dans un document texte Libre Office.
+Vous devez avoir Libre Office installé sur votre machine. Le document l'est :
+Dataset_macros_fr.odt'.
 
 Copyright 2019 Pierre ROUZEAU, pseudo "PRZ"
 License du programme GPL V3

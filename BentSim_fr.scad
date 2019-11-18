@@ -148,7 +148,7 @@ right_leg_fold = -1.1;
 //Angle de la tête
 head_angle = -12;
 //Jambes lobgues:1, jambes courtes:0
-leg_prop = 0.5; // [0:0.1:1]
+leg_prop = 0.5; // [0:0.1:1.2]
 
 //Angle de soulèvement des bras
 arm_lift=10;
@@ -175,7 +175,7 @@ rider2_right_leg_fold = -8.2;
 //Sortie bôme pour le 2eme cycliste
 rider2_boom_extent = 120;
 //2eme cycliste: Jambes longues:1, jambes courtes:0
-rider2_leg_prop = 0; // [0:0.1:1]
+rider2_leg_prop = 0; // [0:0.1:1.2]
 
 /*[Dimensions]*/ 
 //Référence projet

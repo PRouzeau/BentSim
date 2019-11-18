@@ -113,6 +113,12 @@ Note that for variables with spinboxes (small box with top/down arrows),
  when you click in the value box, you can then use the mouse scroll wheel
  to modify the value. 
 
+To export one par one your Customizer dataset and transfer to someone else or
+to save your designs before an update, there is now the possibility to export
+and import individual dataset with macros in a Libre Office text document.
+You shall have Libre Office installed on your machine. The document is:
+'Dataset_macros.odt'
+
 Copyright 2019 Pierre ROUZEAU, AKA "PRZ"
 Program license GPL 3.0
 documentation licence cc BY-SA 4.0 and GFDL 1.2

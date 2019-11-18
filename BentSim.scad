@@ -217,7 +217,7 @@ right_leg_fold = -1.1;
 head_angle = -12;
 //fr:Jambes lobgues:1, jambes courtes:0
 //Long legs : 1, short legs : 0
-leg_prop = 0.5; // [0:0.1:1]
+leg_prop = 0.5; // [0:0.1:1.2]
 
 //fr:Angle de soulèvement des bras
 //Arm lift angle
@@ -257,7 +257,7 @@ rider2_right_leg_fold = -8.2;
 rider2_boom_extent = 120;
 //fr:2eme cycliste: Jambes longues:1, jambes courtes:0
 //2nd rider: Long legs : 1, short legs : 0
-rider2_leg_prop = 0; // [0:0.1:1]
+rider2_leg_prop = 0; // [0:0.1:1.2]
 
 /*[Dimensions]*/ 
 //fr:Référence projet
