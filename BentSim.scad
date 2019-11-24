@@ -291,9 +291,9 @@ rear_wheel_tire = 42; //[22:125]
 //fr:Largeur maximum du pneu arrière (affiché avec les surfaces de controle)
 //Maximum rear tire width (displayed with checking surfaces)
 max_rwheel_tire = 42; //[22:125]
-//fr:Angle de chasse des pivots avant
-//front steering caster angle
-caster_angle = 15;
+//fr:Angle de chasse des pivots avant (par rapport a la verticale)
+//front steering rake angle (from vertical)
+rake_angle = 15;
 //fr:Angle de carrossage roues avant
 //Front wheel camber angle
 camber_angle = 5;
@@ -305,7 +305,7 @@ perp_axis_offset = 0;
 rear_camber_angle = 5;
 
 //fr:Inclinaison du pivot de direction (dans le plan des pivots - incliné suivant l'angle de chasse)
-//King pin axis angle (in steering axis plane, reclined per caster angle)
+//King pin axis angle (in steering axis plane, reclined per rake angle)
 king_pin_angle = 15;
 //fr:Extension de l'arbre de pivot au dessus de l'axe
 //King pin shaft extenstion above wheel shaft
@@ -325,11 +325,11 @@ arm_length = 60;
 arm_height_correction = 3;
 
 /*[Transmission]*/
-//fr:Position longitudinale du pédalier
-//Longitudinal bottom bracket position
+//fr:Position longitudinale du pédalier - BBx
+//Longitudinal bottom bracket position - BBx
 BB_long_pos = -355;
-//fr:Hauteur du pédalier
-//Bottom bracket height
+//fr:Hauteur du pédalier - BBz
+//Bottom bracket height - BBz
 BB_height = 380;
 //fr:Longueur des manivelles
 //Crank arm length
@@ -407,59 +407,59 @@ frame_tube_ht = 0;
 //fr:Rayon de cintrage du tube de cadre
 //Frame bend radius
 frame_bend_radius = 180;
-//fr:Longueur du tube en avant du boitier de pédalier
-//Tube length in front of Bottom Bracket
+//fr:Longueur du tube T0 en avant du boitier de pédalier
+//Tube T0 length in front of Bottom Bracket
 frame_front_extent = 0;
-//fr:Angle du tube devant le boitier de pédalier
-//Angle of tube in front of Bottom Bracket
+//fr:Angle A0 du tube attaché au boitier de pédalier (par rapport au sol)
+//Angle A0 of tube connected to Bottom Bracket (relative to ground)
 frame_BB_angle = 3.1;
-//fr:Décalage perpendiculaire du cadre par rapport au boitier de pédalier
-//Frame offset to BB (perpendicular to frame tube)
+//fr:Décalage perpendiculaire du cadre par rapport au boitier de pédalier - BBd:
+//Frame offset to BB (perpendicular to frame tube) - BBd
 frame_BB_offset = 0;
-//fr:Longueur tube derrière le pédalier
-//Length of tube behind BB
+//fr:Longueur tube T1 derrière le pédalier
+//Length of tube T1 behind BB
 frame_front_length = 310;
-//fr:Angle coude après tube derrière le pédalier
-//Bend angle after tube behind BB
+//fr:Angle A1 coude après tube derrière le pédalier
+//Bend angle A1 after tube behind BB
 frame_front_bend_angle =-39.1;
-//fr:Longueur tube sous siège 
-//Under seat tube length
+//fr:Longueur tube T2 sous siège 
+//Under seat tube T2 length
 frame_seat_length = 100;
-//fr:Angle coude après tube sous siège 
-//Bend angle after seat tube
+//fr:Angle A2 coude après tube sous siège 
+//Bend angle A2 after seat tube
 frame_seat_bend_angle = 41;
-//fr:Longueur tube de dossier
-//Back seat tube length
+//fr:Longueur T3 tube de dossier
+//Back seat tube T3 length
 frame_back_length = 170;
-//fr:Angle coude après tube de dossier
-//Bend angle after back tube
+//fr:Angle coude A3 après tube de dossier
+//Bend angle A3 after back tube
 frame_back_bend_angle = 50;
-//fr:Longueur tube support appui-tête
-//Tube behind headrest length
+//fr:Longueur tube T4 support appui-tête
+//Tube T4 behind headrest length
 frame_rear_length = 300;
 //fr:Diamètre du tube renfort de cadre
 //Frame reinforcment tube diameter
 rft_dia = 28;
-//fr:Longueur du tube renfort de cadre
-//Frame reinforcment tube length
+//fr:Longueur du tube renfort de cadre - RL1
+//Frame reinforcment tube length - RL1
 rft_length = 0;
-//fr:Position du tube renfort (sur le tube de siège)
-//Frame reinforcment tube position (on seat beam segment)
+//fr:Position du tube renfort (sur le tube de siège) - RP1
+//Frame reinforcment tube position (on seat beam segment) RP1
 rft_pos = 140;
-//fr:Angle du tube renfort de cadre
-//Frame reinforcment tube angle (from seat beam segment axis)
+//fr:Angle du tube renfort de cadre - RA1
+//Frame reinforcment tube angle (from seat beam segment axis) - RA1
 rft_angle =68.1; 
-//fr:Rotation du tube en croix sur l'axe des roues (horizontal)
-//trike cross rotation on wheel axis (horizontal)
+//fr:Rotation du tube en croix sur l'axe des roues (horizontal) - XH1
+//trike cross rotation on wheel axis (horizontal) - XH1
 cross_X_angle=1.2;
-//fr:Rotation vers l'arrière du tube de croix d'un trike
-//Trike cross rotation to rear
+//fr:Rotation vers l'arrière du tube de croix d'un trike - XV1
+//Trike cross rotation to rear - XV1
 cross_rear_angle=40.1;
-//fr:Distance du coude de la croix par rapport au pivot de direction
-//distance of bend on cross beam from kingpin axis
+//fr:Distance du coude de la croix par rapport au pivot de direction - XL1
+//distance of bend on cross beam from kingpin axis - XL1
 cross_bend_dist=120;
-//fr:Longueur du tube de croix après le coude
-//Cross arm tube length after bend
+//fr:Longueur du tube de croix après le coude - XL2
+//Cross arm tube length after bend - XL2
 cross_lg_adjust = 120;
 
 //fr:Type de siège
@@ -659,7 +659,7 @@ function wheel_diam (rim,tire)= rim+2*tire+4;
 rider2_z_offset = tan(rider2_seat_slider_angle)*rider2_x_offset;
 //echo(rider2_z_offset=rider2_z_offset);
 //ground axis offset
-axis_offset= perp_axis_offset/cos(caster_angle);
+axis_offset= perp_axis_offset/cos(rake_angle);
 
 //effective camber angle - 0 when bicycle
 camb_ang = front_wheel_track?camber_angle:0;
@@ -670,8 +670,8 @@ fwheel_hdia= wheel_diam(front_wheel_rim,front_wheel_tire)/2;
 
 rwheel_hdia= wheel_diam(rear_wheel_rim,rear_wheel_tire)/2;
 
-ground_length = fwheel_hdia/cos(caster_angle);
-trail_base = ground_length*sin(caster_angle);
+ground_length = fwheel_hdia/cos(rake_angle);
+trail_base = ground_length*sin(rake_angle);
 trail = trail_base-axis_offset;
 
 steering_length = 
@@ -686,10 +686,10 @@ wheel_shaft_lg = atan(king_pin_angle-camb_ang)*ground_length;
 arm_y_offset = arm_position*sin(king_pin_angle);
 //becho("arm_y_offset",arm_y_offset);
 arm_z_plane = arm_position*cos(king_pin_angle);
-arm_x_offset = arm_z_plane* sin(caster_angle);
-arm_z_offset = arm_z_plane* cos(caster_angle);
+arm_x_offset = arm_z_plane* sin(rake_angle);
+arm_z_offset = arm_z_plane* cos(rake_angle);
 
-headtube_angle = 90-caster_angle;
+headtube_angle = 90-rake_angle;
 
 //this wheel flop calculation does not take into account king pin angle, so it is wrong
 wheel_flop = cos(headtube_angle)*sin(headtube_angle)*trail;
@@ -726,9 +726,9 @@ lgep = front_wheel_track/2-shaft_length-arm_y_offset;
 lg_steer = lgep-arm_length*sin(ackermann_angle);
 
 arm_z_dec = 
-	arm_length*sin(caster_angle);
-	//+arm_height_correction; //?? composed angle, not caster angle ? 
-arm_r_length= arm_length*cos(caster_angle)*0.99; //?? composed angle, not caster angle ? 
+	arm_length*sin(rake_angle);
+	//+arm_height_correction; //?? composed angle, not rake angle ? 
+arm_r_length= arm_length*cos(rake_angle)*0.99; //?? composed angle, not rake angle ? 
 
 //calculate length - for a SWD or tadpole trike, that depends from BB extent and chainring diameter
 cycle_length = round(wheel_base+rwheel_hdia+((BB_long_pos<0)?-BB_long_pos-120:fwheel_hdia));
@@ -857,7 +857,7 @@ module flat_view () {
 	}
 	projection() {
 		// Steering blueprint
-		r(0,90-caster_angle)
+		r(0,90-rake_angle)
 			t(trail) {
 				steering(true, true, 0, true);
 				all_wheels(false, false); //front wheels only
@@ -869,7 +869,7 @@ module flat_view () {
 		// Pivot
 		t(fwheel_hdia+50,600)
 			r(king_pin_angle)
-				r(0,-caster_angle)
+				r(0,-rake_angle)
 					t(trail) {
 						steering(true,false, -steering_rot, true);
 						all_wheels(false, false, false); //front wheels only
@@ -891,7 +891,7 @@ module flat_view () {
 				glinez(fwheel_hdia,false);
 			// Arrows
 			tslz (fwheel_hdia)
-				r(0, caster_angle) {
+				r(0, rake_angle) {
 					t(-70) p_arrow(0,0,"B");
 					tslz (200)
 						p_arrow(90,0,"A");
@@ -1147,11 +1147,11 @@ module steering (flat = false, mirr=true, rot=0, proj=false) {
 //steer origin is 0,0
 module steer (stro) {
 	t(axis_offset,front_wheel_track/2-king_pin_offset, pivot_height)
-		r(0,caster_angle)
+		r(0,rake_angle)
 			r(king_pin_angle) 
 			 rotz(stro)
 				r(-king_pin_angle)
-					r(0,-caster_angle)
+					r(0,-rake_angle)
 						t(-axis_offset,-front_wheel_track/2+king_pin_offset, -pivot_height)
 							children();
 }
@@ -1160,12 +1160,12 @@ module hsteering (flat = false, srot=0, proj=false) {
 	//2nd cross length = 
 	td = frame_tube_dia;
 	//Ackerman angle as viewed in the plan perpendicular to steering axis
-	c_acker = atan(tan(ackermann_angle)/cos(caster_angle));
+	c_acker = atan(tan(ackermann_angle)/cos(rake_angle));
 	//echo ("Ackermann angle, angle calculated in other plane",ackermann_angle,c_acker);
 	
 	t(axis_offset,front_wheel_track/2-king_pin_offset, pivot_height) {
 		//king pin
-		r(0,caster_angle)
+		r(0,rake_angle)
 			r(king_pin_angle) {
 				//axis
 				glinez (fwheel_hdia*2+400, false,-steering_length);
@@ -1173,7 +1173,7 @@ module hsteering (flat = false, srot=0, proj=false) {
 				if (!proj && display_frame) rotz (-srot) {
 					color(c_frame) {
 						//head tube
-						tslz(frame_pivot_height-sin(caster_angle)*axis_offset) {
+						tslz(frame_pivot_height-sin(rake_angle)*axis_offset) {
 							duplz(head_tube_height)
 								glinex(80);
 							cylz(42,head_tube_height, 0,0,0, 24);
@@ -1191,7 +1191,7 @@ module hsteering (flat = false, srot=0, proj=false) {
 					dx=tire_diam(front_wheel_rim,max_fwheel_tire)+30;
 					rtx = (BB_long_pos<0)?0:180;
 					if (dcheck&&front_wheel_track==0)
-						tslz(-sin(caster_angle)*axis_offset)
+						tslz(-sin(rake_angle)*axis_offset)
 						rotz(-45+rtx){
 							rotate_extrude(angle=90, $fn=64)
 							t(sign(BB_long_pos)* perp_axis_offset)
@@ -1203,7 +1203,7 @@ module hsteering (flat = false, srot=0, proj=false) {
 								}
 						}
 					if(OSS_handlebar)
-						tslz(stem_height+frame_pivot_height+steerer_tube_length-sin(caster_angle)*axis_offset)
+						tslz(stem_height+frame_pivot_height+steerer_tube_length-sin(rake_angle)*axis_offset)
 							rotz(-srot)
 								handlebar();
 				}
@@ -1237,7 +1237,7 @@ module hsteering (flat = false, srot=0, proj=false) {
 					}
 					//Steering arm (bracket)
 					r(king_pin_angle) 
-					r(0,caster_angle) 
+					r(0,rake_angle) 
 					rotz(-c_acker) {
 						glinex(-arm_r_length,false);
 						duplx(-arm_r_length) 
@@ -1419,10 +1419,10 @@ module fork (stro=0, flg=fwheel_hdia+55, clrf = "black") {
 	fwhd = fwheel_hdia;
 	color(clrf)
 	t(axis_offset,0,fwhd) 
-		r(0,caster_angle)
+		r(0,rake_angle)
 			rotz(stro)
 				dmirrory()
-				t(-pao,54, -pao*tan(caster_angle)){
+				t(-pao,54, -pao*tan(rake_angle)){
 					diff(){
 						mirrorx(pao<0)
 							r(hhang)
@@ -1436,7 +1436,7 @@ module fork (stro=0, flg=fwheel_hdia+55, clrf = "black") {
 					cyly(-32,8);
 				}
 	t(0,0,fwhd)
-		r(0,caster_angle) {
+		r(0,rake_angle) {
 			color(clrf)
 				cylz(36,-40, pao,0,flg);
 			gray()
@@ -1503,7 +1503,7 @@ module tube_frame (clrf=c_frame){
 				t(-frame_front_extent)
 					hull() {
 						cylx(dt-2,1, 90);
-						r(0,-frame_BB_angle+caster_angle)
+						r(0,-frame_BB_angle+rake_angle)
 							cylz(-38,head_tube_height-25, 0,0,head_reinf_offset);
 					}
 			//-- Main frame sequence ------
@@ -1649,18 +1649,18 @@ module pos_flight () {
 		steer(-steering_rot)
 		mirrorx()
 		tslz(fwheel_hdia)
-		r(0,-caster_angle)
+		r(0,-rake_angle)
 			t(-perp_axis_offset,0,frame_pivot_height+steerer_tube_length-12)
-				front_light(caster_angle, 1, c_light);
+				front_light(rake_angle, 1, c_light);
 	}
 	//fork 
 	else if(flight_pos==2) {
 		steer(-steering_rot)
 		mirrorx()
 		tslz(fwheel_hdia)
-		r(0,-caster_angle)
+		r(0,-rake_angle)
 			t(-perp_axis_offset+16,0,frame_pivot_height)
-				front_light(caster_angle, 2, c_light);
+				front_light(rake_angle, 2, c_light);
 	}
 	// boom
 	else if(flight_pos==3) {
