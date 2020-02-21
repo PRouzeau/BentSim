@@ -125,6 +125,9 @@ display_check =false;
 //fr:Angle de rotation de la roue avant
 //Front wheel steering angle
 steering_rot=0;
+//fr:2eme angle de rotation de la roue avant - affiché si different de 0
+//2nd front wheel steering angle - displayed if different from 0
+steering_rot2=0;
 
 //=================================
 /*fr:[Caméra]*/ 
@@ -998,8 +1001,8 @@ module wheel_symb (wh_d=0, top_symb=true, shaftlg=0) {
 	}
 	if(wh_d) {
 		diff() {
-			cyly(-wh_d,d_line, 0,0,0, 32);
-			cyly(-wh_d+2*d_line,10, 0,0,0, 32);
+			cyly(-wh_d,d_line, 0,0,0, 36);
+			cyly(-wh_d+2*d_line,10, 0,0,0, 36);
 		}
 		if(top_symb) //wheel ends on top view
 			dmirrorx()
@@ -1012,7 +1015,7 @@ module wheel_symb (wh_d=0, top_symb=true, shaftlg=0) {
 //-- display all wheels -------
 module all_wheels (rearw=true, top_symb = true, mirr=true) {
 	//front wheels
-	steer(-steering_rot) 
+	steer(-steering_rot,-steering_rot2) 
 		fwheel(top_symb);
 	if(front_wheel_track && mirr)
 		mirrory()
@@ -1028,7 +1031,7 @@ module all_wheels (rearw=true, top_symb = true, mirr=true) {
 				if(rsusp_x) { //rear_suspension
 					if(dcheck||view_type==view_flat|| display_rwheel_up)
 						rwheel_disp(rsusp_ang);
-					if(display_shafts)
+					if(display_shafts&&display_frame)
 						color(c_steel) //???
 							cyly(-25,100, rsusp_x,0,rsusp_z);
 				}
@@ -1053,7 +1056,7 @@ module all_wheels (rearw=true, top_symb = true, mirr=true) {
 	//following double partly what is in steering() module  - for axis
 	module front_wheel_shaft (shaft=false) {
 		// Wheel shaft
-		steer(steering_rot)
+		steer(steering_rot,steering_rot2)
 			fwshaft();
 		if(mirr)
 			mirrory()
@@ -1145,15 +1148,22 @@ module steering (flat = false, mirr=true, rot=0, proj=false) {
 }
 
 //steer origin is 0,0
-module steer (stro) {
+module steer (stro, stro2=0) {
 	t(axis_offset,front_wheel_track/2-king_pin_offset, pivot_height)
 		r(0,rake_angle)
-			r(king_pin_angle) 
-			 rotz(stro)
-				r(-king_pin_angle)
-					r(0,-rake_angle)
-						t(-axis_offset,-front_wheel_track/2+king_pin_offset, -pivot_height)
-							children();
+			r(king_pin_angle)  {
+				stx(stro) children();
+				//2nd rotation position
+				if (stro2!=0) 
+					stx(stro2) children();
+			}
+	module stx(str1) {
+		rotz(str1)
+			r(-king_pin_angle)
+				r(0,-rake_angle)
+					t(-axis_offset,-front_wheel_track/2+king_pin_offset, -pivot_height)
+						children();
+	}
 }
 
 module hsteering (flat = false, srot=0, proj=false) {
@@ -1646,7 +1656,7 @@ module pos_flight () {
 	//steerer top
 	if (c_light)
 	if (flight_pos==1) {
-		steer(-steering_rot)
+		steer(-steering_rot,-steering_rot2)
 		mirrorx()
 		tslz(fwheel_hdia)
 		r(0,-rake_angle)
@@ -1655,7 +1665,7 @@ module pos_flight () {
 	}
 	//fork 
 	else if(flight_pos==2) {
-		steer(-steering_rot)
+		steer(-steering_rot,-steering_rot2)
 		mirrorx()
 		tslz(fwheel_hdia)
 		r(0,-rake_angle)
