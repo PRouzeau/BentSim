@@ -1,0 +1,41 @@
+BentSim   Recumbent cycle simulator © 2019-2020 Pierre ROUZEAU Licence GPL V3
+Release notes 
+February, 26,  2020:
+– Add this ‘release notes’ file
+- Added two seats: ICE mesh seat and Hardshell seat (fictive) – Examples modified with these news seats
+- Added possibility to create a fairing in segment, like aircraft aluminium fuselages
+- Wheels can now have a fairing
+- Possible to show two crank arm and legs position, to estimate clearance within fairing
+- Frame: Trike cross angles definitions revised, one angle is deprecated
+- Frame: Bottom bracket on boom can be verticaly offset from the boom, like done on some velomobiles with a support bracket.
+- Rear transmission can now be simple speed/gearbox driven
+
+The fairing calculation time is significant. First calculation may take 1 minute on an old desktop. When developing a fairing, you may:
+- Cancel automatic preview (top left of customizer panel)
+- Cancel the display of the nose (setting 0 as first number in fairing display array), which is the longer part to calculate, and end the design with the nose.
+
+Driver (cyclist) revision:
+- Torso much more realistic, with back camber and shoulder blades
+- Neck articulation revised
+- Head proportions revised, with head size variable with overall size (with size ratio powered by 0.4: Headsize = headstandard*SizeRatio^0.4). This means a rider of 80% size of the standard will have a 91,5% head size from say ‘standard’
+- Limb and torso thickness proportions revised (with size ratio powered by 0.6:  Thickness = thicknessStandard*SizeRatio^0.6). This means that a rider of 80%  size from standard will have a 87.5% limbs and torso thickness of the ‘standard’.
+This gives much better proportion evolution with size, the smaller size looking more as children than dwarfs and larger size having better evolution either.
+- Foot size is proportional to leg length.
+- When changing size, the driver move slightly to/from seat to take into account limb thickness changes, so the real reference attach is the seat.
+
+Unfortunately the better torso shape add significant time calculation in the model, depending your computer power. Alone, a rider need 5 second calculation time on an old desktop. Complex models may need 10 to 15 seconds to be calculated first.
+
+Examples:
+Added three faired examples:
+- 1 Velomobile trike
+- 1 Streamliner (bicycle)
+- 1 faired trike with front box,  ‘Cargomobile’ (named coined by ‘Diagonale’ on the french forum Velorizontal).
+
+- Removed ‘Pocket’ trike, replaced by ‘mini trike’ foreseen for children and very small people.
+
+*November, 14, 2019 issue - Add rear suspension, miscellaneous bug corrections
+*November, 10, 2019 issue, The program was extended and renamed as ‘BentSim’, adding more complete modelisation and the capability to design a monotube Frame. It was correcting a mistake in the geometry. First seat is Rans Mesh seat. New model elements (Seat, handlebars, Lights) were issued from the ‘Velassi’ model. Significant work was done to improve the rider model accuracy. Front Fork is a new design.
+
+
+*October, 4, 2019 issue – First revision, miscellaneous bug correction and improvement
+*August, 10, 2019 First issue. This program was first issued as Trike-Geometry, producing only geometry blueprint. Program core written from scratch, but wheels and rider models were issued from the model I did to built the first version of my ‘Velassi’ recumbent, program which was never publicly released. 

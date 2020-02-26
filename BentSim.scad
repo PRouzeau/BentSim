@@ -1,6 +1,6 @@
 /*en+
 BentSim, a recumbent simulator
-BentSim allow 3D modelisation of a recumbent bike, trike or quadrucycle. It can export geometry blueprint of whole bike/trike and steering. Overall volume or miscellaneous projections can aussi be exported.
+BentSim allow 3D modelisation of a recumbent bike, trike or quadricycle. It can export geometry blueprint of whole bike/trike and steering. Overall volume or miscellaneous projections can also be exported.
  Rider size and proportion is adjustable.
  Single tube frame (circular or rectangular)
  Optional rear suspension
@@ -12,13 +12,14 @@ Taille et proportion du cycliste ajustable.
 Cadre monotube (circulaire ou rectangulaire)
 Suspension arrière en option.
 */
-// Copyright 2019 Pierre ROUZEAU,  AKA PRZ
+// Copyright 2019-2020 Pierre ROUZEAU,  AKA PRZ
 // Program license GPL V3
 // documentation licence cc BY-SA 4.0 and GFDL 1.2
 // First version: 0.0 - August, 10, 2019 as Trike geometry only
 //Revised October, 4, 2019
 //Revised November, 10, 2019 as general Recumbent simulator
 //Rev Nov, 14, 2019. Bug correction and rear suspension
+//Revised  Feb, 24, 2020. Fairing, new seats, cyclist proportions and many other mods - see detailed text - 
 /*en+
 Application could be downloaded here:
 	https://github.com/PRouzeau/BentSim
@@ -70,38 +71,45 @@ Il faut noter que le calcul de rendu est assez long avec OpenScad.
 */
 
 //*******************************
-include <Bike_accessories.scad> //also include Z_library.scad
-include <Velo_rider.scad>
+include <Library/Bike_accessories.scad> //also include Z_library.scad
+include <Library/Velo_rider.scad>
 
 /*[Hidden]*/ 
 rider=false; //unactivate library model
 frprec = 24; // facets on frame tube ($fn)
+//debug echo
+debug=true;
 
 //================================
 /*fr:[Affichage]*/ 
 /*[Display]*/ 
 //fr:Type de vue
 //View type
-view_type = 0; // [0:3D view, 1:Blueprint projection, 2:Side projection, 3:Top projection, 4:Front projection]
-//fr::view_type = 0; // [0:Vue 3D, 1:Projection de l'épure, 2:Projection latérale, 3:Projection du dessus, 4: Projection de face]
+view_type = 0; // [0:3D view, 1:Blueprint projection, 2:Side projection, 3:Top projection, 4:Front projection, 5:Fairing projection]
+//fr::view_type = 0; // [0:Vue 3D, 1:Projection de l'épure, 2:Projection latérale, 3:Projection du dessus, 4: Projection de face, 5:Projection carrosserie]
 //fr:Affiche les arbres (sinon seulement les axes)
 //Display shafts (else only axis)
 display_shafts = true;
 //fr:Affiche les lignes de géométrie (axes)
 //Display geometry lines (axis)
 display_lines = true;
+//fr:Affiche le sol
+//Display ground
+display_ground = true;
 //fr:Affiche le cycliste
 //Display rider
-display_rider = false;
-//fr:Pied gauche a terre
-//Rider left foot on ground
-foot_on_ground = false;
+display_rider = 0; //[0:None, 1:First rider, 2:Second rider, 3:Both riders]
+//fr::display_rider = 0; //[0:Aucun, 1:1er cycliste, 2:2eme cycliste, 3:Les deux cyclistes]
 //fr:Affiche le cadre
-//display frame
+//Display main frame
 display_frame = false;
+//fr:Affiche le chassis support roue arrière
+//Display rear wheel frame support
+display_rear_frame = false;
 //fr:Affiche les roues (sinon modèle filaire)
 //Display full wheels (else wire model)
-display_wheels = true;
+display_wheels = 1; //[0:No wheel, 1:Plain wheels, 2: Wireframe wheels]
+//fr::display_wheels = 1; //[0:Pas de roues, 1:Roues normales, 2: Roues symbolisées]
 //fr:Affiche la roue arrière relevée (si suspension)
 //Display rear wheel up (if suspension)
 display_rwheel_up = false;
@@ -117,17 +125,31 @@ inf_text = true;
 //fr:Affiche avertissements et données dans la fenêtre de visualisation
 //Display information and warning in the view windows
 disp_text = true;
-//fr:Rotation de la direction (degrés), roue avant droite seulement
-//Steering rot angle (deg), front right wheel only
 //fr:Affiche des surfaces de vérification
 //Display checking surfaces
 display_check =false;
-//fr:Angle de rotation de la roue avant
-//Front wheel steering angle
+//fr:Affiche la roue  droite tournée
+//Display right front wheel and handlebar steered
+display_rot_wheels = false;
+//fr:Rotation de la direction (degrés), roue avant droite seulement
+//Steering rot angle (deg), front right wheel only
 steering_rot=0;
-//fr:2eme angle de rotation de la roue avant - affiché si different de 0
-//2nd front wheel steering angle - displayed if different from 0
-steering_rot2=0;
+//fr:2eme angle de rotation de la roue avant
+//2nd front wheel steering angle
+steering_rot2=45;
+//fr:Affiche la carrosserie
+//Display fairing
+display_fairing = 0; //[0:None, 1:Full, 2:Half, 3:Shell -for cut-]
+//fr::display_fairing = 0; //[0:Aucune, 1:Complète, 2:Demi, 3:Coque -pour coupe-]
+//fr:Position de la coupure en x (plan de coupe verticale) sur le carénage
+//Fairing x position of vertical cut plane
+fairing_cut_x = 1300;
+//fr:Position de la coupure en z (plan de coupe horizontale) sur le carénage
+//Fairing z position of horizontal cut plane
+fairing_cut_z = 1700;
+//fr:S'il y a un carénage, affiche le pare-brise
+//If fairing, display windscreen
+disp_ws = true;
 
 //=================================
 /*fr:[Caméra]*/ 
@@ -158,14 +180,16 @@ $vpd=Cimp?iview_type?5500:4500:$vpd; //no window
 $vpt=Cimp?[iview_x,0,750]:$vpt; 
 //fr:Vecteur de rotation
 //Camera rotation
-$vpr=Cimp?(iview_type?(iview_type==1?[0,0,0]:[90,0,0]):[76,0,30]):(view_type?[0,0,0]:$vpr); 
+$vpr=Cimp?(view_type>0?(iview_type==1?[0,0,0]:[90,0,0]):[76,0,30]):(view_type>0?[0,0,0]:$vpr); 
 //above force top view if we are displaying a projection
 echo_camera();
-
 
 //==============================
 /*fr:[Texte Descriptif]*/
 /*[Description text]*/
+//fr: Votre signature (en 3D sur les vues 3D)
+//Your signature (in 3D on 3D views)
+txtsign = "(c) Pierre ROUZEAU, Licence cc BY-SA 4.0";
 //fr: coordonnée x du texte
 //text x coordinate position
 text_xpos = -820;
@@ -192,15 +216,21 @@ author="_";
 //fr:Date et révision
 //Date and revision
 design="preliminary test";
+//fr::design="test préliminaire";
 
 designtxt = [str("Author: ",author),str("Date, revision: ",design)];
+//fr::designtxt = [str("Auteur: ",author),str("Date, révision: ",design)];
 
 /*fr:[Cycliste]*/ 
 /*[Rider]*/
-//fr: Taille du cycliste
+//fr:Type de cycliste
+//Rider type
+rider_type=1; //[1:Pedalling, 2:Leg on ground, 3:Seated, 5:No leg] 
+//fr::rider_type=1; //[1:Pédalant, 2:Un pied à terre, 3:Assis, 5:Pas de jambes] 
+//fr:Taille du cycliste
 //Rider height
 rider_height = 1700;
-//fr: Hauteur du siège
+//fr:Hauteur du siège
 //Seat height
 seat_height = 290;
 //fr:Distance entre le siège et l'axe des roues avant
@@ -209,17 +239,20 @@ seat_front_distance = 440;
 //fr:Angle du dossier de siège par rapport au sol
 //Seat back angle from ground plane
 seat_angle = 48;
-//fr: Angle des jambes
+//fr:Angle des jambes
 //Leg angle
 leg_angle=62.1;
-//fr:Angle pliage de la jambe droite
+//fr:Angle de pliage de la jambe droite
 //Right leg fold angle
 right_leg_fold = -1.1;
-//fr:Angle de la tête
+//fr:Angle d'ouverture des jambes (1~3)
+//Leg spread angle (1~3)
+leg_spread = 3;
+//fr:Angle de la tête (/corps)
 //Head angle (to body)
 head_angle = -12;
-//fr:Jambes lobgues:1, jambes courtes:0
-//Long legs : 1, short legs : 0
+//fr:Jambes longues: 1.2; jambes courtes: 0
+//Long legs: 1.2, short legs: 0
 leg_prop = 0.5; // [0:0.1:1.2]
 
 //fr:Angle de soulèvement des bras
@@ -255,12 +288,26 @@ rider2_leg_offset = 1.6;
 //fr:2eme cycl. Angle pliage de la jambe droite
 //2nd rider: Right leg fold angle
 rider2_right_leg_fold = -8.2;
-//fr:Sortie bôme pour le 2eme cycliste
-//2nd rider boom extent
+//fr:Sortie bôme pour le 2eme cycliste/Déplacement boitier de pédalier
+//2nd rider boom extent/BB displacement
 rider2_boom_extent = 120;
 //fr:2eme cycliste: Jambes longues:1, jambes courtes:0
 //2nd rider: Long legs : 1, short legs : 0
 rider2_leg_prop = 0; // [0:0.1:1.2]
+//fr:Pliage jambes pour le 2eme cycliste avec manivelles verticales (0 pour supprimer ce 2eme jeu de jambes)
+//2nd rider: Leg folding for vertical cranks (0 to remove this 2nd leg set) 
+rd2_vfold = 0;
+//fr:Angle jambe gauche pour le 2eme cycliste avec manivelles verticales
+//2nd rider: Left leg angle for vertical cranks
+rd2_lfolda = 70;
+//fr:Angle jambe droite pour le 2eme cycliste avec manivelles verticales
+//2nd rider: Right leg angle for vertical cranks
+rd2_rfolda = 43;
+
+//fr:Type de siège
+//Seat type
+seat_type = 2; // [0:None,1:Rans mesh seat, 2:ICE mesh seat, 3:Hard shell seat, 9:Saddle]
+//fr::seat_type = 1; // [0:Aucun,1:Rans filet, 2:ICE filet, 3:Siège coque, 9:Selle]
 
 /*[Dimensions]*/ 
 //fr:Référence projet
@@ -294,9 +341,9 @@ rear_wheel_tire = 42; //[22:125]
 //fr:Largeur maximum du pneu arrière (affiché avec les surfaces de controle)
 //Maximum rear tire width (displayed with checking surfaces)
 max_rwheel_tire = 42; //[22:125]
-//fr:Angle de chasse des pivots avant (par rapport a la verticale)
-//front steering rake angle (from vertical)
-rake_angle = 15;
+//fr:Angle de chasse des pivots avant
+//front steering caster angle
+caster_angle = 15;
 //fr:Angle de carrossage roues avant
 //Front wheel camber angle
 camber_angle = 5;
@@ -308,7 +355,7 @@ perp_axis_offset = 0;
 rear_camber_angle = 5;
 
 //fr:Inclinaison du pivot de direction (dans le plan des pivots - incliné suivant l'angle de chasse)
-//King pin axis angle (in steering axis plane, reclined per rake angle)
+//King pin axis angle (in steering axis plane, reclined per caster angle)
 king_pin_angle = 15;
 //fr:Extension de l'arbre de pivot au dessus de l'axe
 //King pin shaft extenstion above wheel shaft
@@ -328,11 +375,11 @@ arm_length = 60;
 arm_height_correction = 3;
 
 /*[Transmission]*/
-//fr:Position longitudinale du pédalier - BBx
-//Longitudinal bottom bracket position - BBx
+//fr:Position longitudinale du pédalier
+//Longitudinal bottom bracket position
 BB_long_pos = -355;
-//fr:Hauteur du pédalier - BBz
-//Bottom bracket height - BBz
+//fr:Hauteur du pédalier
+//Bottom bracket height
 BB_height = 380;
 //fr:Longueur des manivelles
 //Crank arm length
@@ -343,15 +390,27 @@ crankshaft_width = 117;
 //fr:Nombre de dents du plateau
 //Chainring teeth number
 chainring_teeth = 38;
+//fr:Nombre de dents du pignon arriere
+//Rear sprocket teeth number
+sprocket_teeth = 19;
+//fr:Pignon simple ou boite de vitesses
+//Single speed or gearbox
+single_speed = false;
 //fr:Position latérale de la ligne de chaîne
 //Chainline side position
 chainline_position = 50;
 //fr:Angle des manivelles
 //Crank angle (from horizontal)
 crank_angle = -23;
+//fr:Angle des manivelles verticales ~90
+//Crank angle when vertical (from horizontal) ~90
+vcrank_angle = 90;
 //fr:Angle des pédales
 //Pedal angle (from crank)
 pedal_angle = 75;
+//fr:Angle des pédales pour les manivelles verticales
+//Pedal angle for vertical crank (from crank)
+vpedal_angle = 120;
 //fr:Les poulies de chaine du brin tendu et du brin mou sont sur le même axe
 //Driving idler and return idler on same shaft
 merged_idler = true;
@@ -410,65 +469,63 @@ frame_tube_ht = 0;
 //fr:Rayon de cintrage du tube de cadre
 //Frame bend radius
 frame_bend_radius = 180;
-//fr:Longueur du tube T0 en avant du boitier de pédalier
-//Tube T0 length in front of Bottom Bracket
+//fr:Longueur du tube en avant du boitier de pédalier
+//Tube length in front of Bottom Bracket
 frame_front_extent = 0;
-//fr:Angle A0 du tube attaché au boitier de pédalier (par rapport au sol)
-//Angle A0 of tube connected to Bottom Bracket (relative to ground)
+//fr:Angle du tube devant le boitier de pédalier
+//Angle of tube in front of Bottom Bracket
 frame_BB_angle = 3.1;
-//fr:Décalage perpendiculaire du cadre par rapport au boitier de pédalier - BBd:
-//Frame offset to BB (perpendicular to frame tube) - BBd
+//fr:Décalage perpendiculaire du cadre par rapport au boitier de pédalier
+//Frame offset to BB (perpendicular to frame tube)
 frame_BB_offset = 0;
-//fr:Longueur tube T1 derrière le pédalier
-//Length of tube T1 behind BB
+//fr:Longueur tube derrière le pédalier
+//Length of tube behind BB
 frame_front_length = 310;
-//fr:Angle A1 coude après tube derrière le pédalier
-//Bend angle A1 after tube behind BB
+//fr:Angle coude après tube derrière le pédalier
+//Bend angle after tube behind BB
 frame_front_bend_angle =-39.1;
-//fr:Longueur tube T2 sous siège 
-//Under seat tube T2 length
+//fr:Longueur tube sous siège 
+//Under seat tube length
 frame_seat_length = 100;
-//fr:Angle A2 coude après tube sous siège 
-//Bend angle A2 after seat tube
+//fr:Angle coude après tube sous siège 
+//Bend angle after seat tube
 frame_seat_bend_angle = 41;
-//fr:Longueur T3 tube de dossier
-//Back seat tube T3 length
-frame_back_length = 170;
-//fr:Angle coude A3 après tube de dossier
-//Bend angle A3 after back tube
-frame_back_bend_angle = 50;
-//fr:Longueur tube T4 support appui-tête
-//Tube T4 behind headrest length
-frame_rear_length = 300;
+//fr:Longueur tube de dossier
+//Back seat tube length
+frame_back_length = 230;
+//fr:Angle coude après tube de dossier
+//Bend angle after back tube
+frame_back_bend_angle = 58;
+//fr:Longueur tube support appui-tête
+//Tube behind headrest length
+frame_rear_length = 235;
 //fr:Diamètre du tube renfort de cadre
 //Frame reinforcment tube diameter
 rft_dia = 28;
-//fr:Longueur du tube renfort de cadre - RL1
-//Frame reinforcment tube length - RL1
+//fr:Longueur du tube renfort de cadre
+//Frame reinforcment tube length
 rft_length = 0;
-//fr:Position du tube renfort (sur le tube de siège) - RP1
-//Frame reinforcment tube position (on seat beam segment) RP1
+//fr:Position du tube renfort (sur le tube de siège)
+//Frame reinforcment tube position (on seat beam segment)
 rft_pos = 140;
-//fr:Angle du tube renfort de cadre - RA1
-//Frame reinforcment tube angle (from seat beam segment axis) - RA1
+//fr:Angle du tube renfort de cadre
+//Frame reinforcment tube angle (from seat beam segment axis)
 rft_angle =68.1; 
-//fr:Rotation du tube en croix sur l'axe des roues (horizontal) - XH1
-//trike cross rotation on wheel axis (horizontal) - XH1
-cross_X_angle=1.2;
-//fr:Rotation vers l'arrière du tube de croix d'un trike - XV1
-//Trike cross rotation to rear - XV1
+//fr:Rotation du tube en croix sur l'axe des roues (horizontal) - Abandonné, ne pas utiliser
+//trike cross rotation on wheel axis (horizontal) Deprecated - do not use
+cross_X_angle=0;
+//fr:Rotation du tube en croix sur l'axe longitudinal - angle 0 perpendiculaire au pivot
+//Trike cross rotation on longitudinal axis - 0 angle perpendicular to kingpin axis.
+cross_Y_angle=-14.4;
+//fr:Rotation vers l'arrière du tube de croix d'un trike
+//Trike cross rotation to rear
 cross_rear_angle=40.1;
-//fr:Distance du coude de la croix par rapport au pivot de direction - XL1
-//distance of bend on cross beam from kingpin axis - XL1
+//fr:Distance du coude de la croix par rapport au pivot de direction
+//distance of bend on cross beam from kingpin axis
 cross_bend_dist=120;
-//fr:Longueur du tube de croix après le coude - XL2
-//Cross arm tube length after bend - XL2
-cross_lg_adjust = 120;
-
-//fr:Type de siège
-//Seat type
-seat_type = 1; // [0:None,1:Mesh seat, 9:Saddle]
-//fr::seat_type = 1; // [0:Aucun,1:Filet, 9:Selle]
+//fr:Longueur du tube de croix après le coude
+//Cross arm tube length after bend
+cross_lg_adjust = 104;
 
 /*fr:[Support roue arrière]*/
 /*[Rear wheel support]*/
@@ -477,13 +534,13 @@ seat_type = 1; // [0:None,1:Mesh seat, 9:Saddle]
 stay_dia = 16;
 //fr:Angle des haubans (rel. horizontale)
 //Seat stay angle (from horizontal)
-seat_stay_angle = 17.1;
+seat_stay_angle = 16;
 //fr:Rotation hauban sur axe vertical
 //Vertical seat stay angle
 seat_stay_v_ang = 5.9;
 //fr:Longueur hauban (affiché si longueur > 0)
 //Seat stay length (displayed if length>0)
-seat_stay_length = 425;
+seat_stay_length = 405;
 //fr:Angle de la base (rel. horizontale)
 //Chain stay angle (from horizontal)
 chain_stay_angle = -5.1;
@@ -492,7 +549,7 @@ chain_stay_angle = -5.1;
 chain_stay_v_ang = 2.1;
 //fr:Longueur de la base
 //Chain stay length
-chain_stay_length = 530;
+chain_stay_length = 470;
 //fr:Position longitudinale de l'axe suspension arrière (0: pas de suspension)
 //Longitudinal position of rear suspension axis (0: no suspension)
 rsusp_x = 0;
@@ -563,8 +620,115 @@ USS_z = 275;
 //fr:Angle du pivot de direction pour un guidon sous siège
 //Under seat steering angle (from vertical)
 USS_angle = 10;
+//fr:Coefficient d'amplification de direction  (mouvement de roue/mouvement de guidon)
+//Steering amplification coefficient (wheel angle/handlebar angle) 
+cf_steer = 1.5;
+/*fr:[Carosserie]*/
+/*[Fairing]*/
+//fr:Affichage des segments de carrosserie, il y a toujours un couple de plus que le nombre de segments.
+//Fairing segment display - first segment (nose) is number 0 - there is always one more frame than segment number
+bdisp = [1,1,1,1,1];
+//fr:Longueur des segments de carrosserie (Le premier est le nez)
+//Fairing segment length (first is nose)
+blg = [377,310,620,500,750];
+//fr:Angle des couples
+//Frames angle 
+bang = [0,15,-5,10,-36,0];
+//fr:Largeur du couple
+//Frame width
+bwd = [670,670,780,770,650,100];
+//fr:Pincement haut du couple
+//Frame top width pinching (negative number enlarge frame top)
+bpinch = [50,30,70,120,180,0];
+//fr:Hauteur du couple (sans extension)
+//Frame height (without extension)
+bht = [460,440,530,640,930,820];
+//fr:Position verticale du centre des couples
+//Frames center vertical position
+bzpos = [0,-20,15,110,180,260];
+//fr:Rayon en bas des couples
+//Frame bottom radius
+brd = [230,130,100,100,140,47];
+//fr:Rayon en haut des couples
+//Frame top radius
+brdt = [230,190,180,200,140,47];
+//fr:Rayon du bombement supérieur (un rayon plus petit agrandit le bombement)
+//Frame top bulge radius (lower radius increase bulge)
+bwrdt = [0,0,0,0,0,0];
+//fr:Rayon des bombements latéraux (un rayon plus petit agrandit les bombements)
+//Frame side bulge radius (lower radius increase bulge)
+bwrd = [0,500,0,0,1800,1000];
+//fr:Largeur de l'extension au dessus
+//Frame top bubble width
+bblwd = [0,440,450,470,240,0];
+//fr:Hauteur supplémentaire de l'extension
+//Frame top bubble vertical extent
+bblht = [0,80,90,80,230,0];
+//fr:Changment au droit de l'extension (-1: pas d'extension haute après, 1: pas d'extension haute avant)
+//Frame top bubble discontinuity (-1: no bubble behind, 1: no bubble before)
+bblct = [0,0,0,0,1];
+//fr:Pliage du couple
+//Frame folding angle
+bfold = [0,-31,0,0,16,0];
+//fr:Position verticale du pli (/ centre)
+//Frame fold vertical position (relative/center)
+bfoldo = [0,70,0,0,160,0];
+//fr:Coefficient d'allongement du nez (2~3)
+//Nose length ovoidal coefficient (2~3)
+fnosecf = 1.9;
+//fr:Le toit est situé sur le segment N° - 0:pas de toit
+//roof is located on segment N° - 0:No roof
+froofseg = 0;
+//fr: Largeur du toit
+//roof top width
+froofwd = 220;
+//fr:Allongement du toit  (1,5~2.5)
+//Roof length proportion (to width - 1.5~2.5)
+froofcf = 1.5;
+//fr:Proportion verticale de l'ellipsoide du toit (0,5~0,75)
+//Roof ellipsoidal volume vertical proportion (to width - 0.5~0.75)
+froofvcf = 0.6;
+//fr: Position longitudinale du toit (/couple) 
+//roof top longitudinal position (/frame)
+froofx = 300;
+//fr: Position en hauteur du toit (au dessus du couple avant) 
+//roof top vertical position (atop the front frame)
+froofz = 300;
+//fr:Position de la carrosserie (réf. entre le segment 1 et 2)
+//Fairing x position (ref between first and second segment)
+fairing_x = 310;
+//fr:Position verticale de la carrosserie
+//Fairing z position
+fairing_z = 380;
+//fr:Correction de profondeur (latérale) du puit de roue avant. positif:plus profond
+//Front wheel well depth (sideways) correction. Positive: depeer
+dp_well=-20;
+//fr:Angle supérieur du pare-brise
+//Windscreen top angle
+ws_ang = -3;
+//fr:Position horizontale du saute-vent
+//Wind deflector x position (0: no deflector)
+bscreen_x = -480;
+//fr:Position verticale du saute-vent
+//Wind deflector Z position
+bscreen_z = 770;
+//fr:Couleurs carrosserie [Corps, nez, saute-vent]
+//Fairing colors [Fairing, Nose, Wind deflector]
+fairing_color = ["silver", "orange", [0.5,0.5,0.5,0.35]];
 
-//============================
+//nose length radius
+noselrd = brd[0]*fnosecf;
+echo(str("Nose length radius: ",noselrd," mm"));
+bposx  = [blg[1]+blg[0]-noselrd,blg[1],0,-blg[2],-blg[2]-blg[3],-blg[2]-blg[3]-blg[4]];
+
+// demo with recursive function
+function incp(n)=(n==0?0:incp(n-1))-blg[n];
+bposx2 = [for(i=[0:4]) incp(i)];
+bposx3 = [for(i=[0:5]) (i==0?0:bposx2[i-1])+blg[0]+blg[1]];
+//echo(bposx3=bposx3);
+//echo(bposx=bposx);
+
+//===================================
 /*fr:[Cosmétique et accessoires]*/ 
 /*[Cosmetic and accessories]*/
 //fr:Drapeau sur le siège
@@ -579,9 +743,9 @@ flight_pos = 3; //[0:None, 1:Steerer top, 2:Fork, 3: Boom]
 front_hub_dia = 70;
 //fr:Nombre de rayons de la roue avant
 //Number of front wheel spokes
-front_spoke_nb = 36;//[28,32,36]
+front_spoke_nb = 36;//[0:disc,28,32,36,40]
 //fr:Roue AV: angle d'ajustement des rayons (pour égaliser l'espace entre les rayons). Si 0, rayonnage radial
-//Front spoke angle adjument (to equalise spoke space). If 0, radial spokes
+//Front spoke angle adjustment (to equalise spoke space). If 0, radial spokes
 front_spoke_adj = 3.5; //
 //fr:Garde-boue avant:Angle de départ (0: pas de garde-boue)
 //Front wheel mudguard: start angle (0: no mudguard)
@@ -592,9 +756,9 @@ fw_mud_rear = 195;
 //------------------------------------
 //fr:Nombre de rayons de la roue arrière
 //Number of rear wheel spokes
-rear_spoke_nb = 36; //[28,32,36]
+rear_spoke_nb = 36; //[0:disc,28,32,36,40]
 //fr:Roue AR: angle d'ajustement des rayons (pour égaliser l'espace entre les rayons)
-//Rear spoke angle adjument (to equalise spoke space)
+//Rear spoke angle adjustment (to equalise spoke space)
 rear_spoke_adj = 10.1; //
 //fr:Garde-boue arrière: Angle de départ (0:pas de garde-boue)
 //Rear wheel mudguard: start angle (0: no mudguard)
@@ -627,6 +791,9 @@ c_steel="darkgray";
 //fr:Couleur aluminium
 //Aluminium color
 c_alu=[0.8,0.8,0.8];
+//fr:Couleur vitrage
+//Screen color
+c_glass=[0.5,0.5,0.5,0.35];
 //fr:Couleur pédale
 //Pedal color
 c_pedal = [0.3,0.3,0.3];
@@ -645,12 +812,16 @@ view_flat = 1;
 view_side = 2;
 view_top = 3;
 view_front = 4;
+view_fairing = -1; // < 0 to not force view
+view_sidefairing = 5;
 
 //=================================
 d_line = $preview?2:0.2;
+half_v = display_fairing==2;
 
 usertxt = [txt1,txt2,txt3,"",txt4,txt5,txt6,txt7,txt8];
 //echo(usertxt=usertxt);
+
 //display checking surfaces
 dcheck = display_check && view_type==view_3D;
 //display geometry lines
@@ -662,7 +833,7 @@ function wheel_diam (rim,tire)= rim+2*tire+4;
 rider2_z_offset = tan(rider2_seat_slider_angle)*rider2_x_offset;
 //echo(rider2_z_offset=rider2_z_offset);
 //ground axis offset
-axis_offset= perp_axis_offset/cos(rake_angle);
+axis_offset= perp_axis_offset/cos(caster_angle);
 
 //effective camber angle - 0 when bicycle
 camb_ang = front_wheel_track?camber_angle:0;
@@ -673,8 +844,8 @@ fwheel_hdia= wheel_diam(front_wheel_rim,front_wheel_tire)/2;
 
 rwheel_hdia= wheel_diam(rear_wheel_rim,rear_wheel_tire)/2;
 
-ground_length = fwheel_hdia/cos(rake_angle);
-trail_base = ground_length*sin(rake_angle);
+ground_length = fwheel_hdia/cos(caster_angle);
+trail_base = ground_length*sin(caster_angle);
 trail = trail_base-axis_offset;
 
 steering_length = 
@@ -689,10 +860,10 @@ wheel_shaft_lg = atan(king_pin_angle-camb_ang)*ground_length;
 arm_y_offset = arm_position*sin(king_pin_angle);
 //becho("arm_y_offset",arm_y_offset);
 arm_z_plane = arm_position*cos(king_pin_angle);
-arm_x_offset = arm_z_plane* sin(rake_angle);
-arm_z_offset = arm_z_plane* cos(rake_angle);
+arm_x_offset = arm_z_plane* sin(caster_angle);
+arm_z_offset = arm_z_plane* cos(caster_angle);
 
-headtube_angle = 90-rake_angle;
+headtube_angle = 90-caster_angle;
 
 //this wheel flop calculation does not take into account king pin angle, so it is wrong
 wheel_flop = cos(headtube_angle)*sin(headtube_angle)*trail;
@@ -729,12 +900,19 @@ lgep = front_wheel_track/2-shaft_length-arm_y_offset;
 lg_steer = lgep-arm_length*sin(ackermann_angle);
 
 arm_z_dec = 
-	arm_length*sin(rake_angle);
-	//+arm_height_correction; //?? composed angle, not rake angle ? 
-arm_r_length= arm_length*cos(rake_angle)*0.99; //?? composed angle, not rake angle ? 
+	arm_length*sin(caster_angle);
+	//+arm_height_correction; //?? composed angle, not caster angle ? 
+arm_r_length= arm_length*cos(caster_angle)*0.99; //?? composed angle, not caster angle ? 
 
 //calculate length - for a SWD or tadpole trike, that depends from BB extent and chainring diameter
 cycle_length = round(wheel_base+rwheel_hdia+((BB_long_pos<0)?-BB_long_pos-120:fwheel_hdia));
+
+//Displaying steered wheel (right only)
+strot = (display_rot_wheels||view_type==view_flat)?steering_rot:0;
+strot2 = (display_rot_wheels||view_type==view_flat)?steering_rot2:0;
+
+//Frame calc
+boom = (BB_long_pos<-150) &&frame_BB_offset==0;
 
 //== Console messages ========
 techo("Front wheel diameter: ",fwheel_hdia*2, "mm, Tire:",front_wheel_tire,"mm Rim:",front_wheel_rim);
@@ -758,7 +936,7 @@ techo("Trail: ",r10(trail)," mm");
 techo("Wheel flop: ",r10(wheel_flop)," mm");
 if(shaft_length)
 techo("Shaft length from wheel center to king pin axis: ",r10(shaft_length)," mm");
-//fr::techo("Longueur arbre entre le milieur de la roue et l'axe du pivot: ",r10(shaft_length)," mm");
+//fr::techo("Longueur arbre entre le milieu de la roue et l'axe du pivot: ",r10(shaft_length)," mm");
 if(rear_shaft_lg)
 techo("Rear half shaft length (to wheel middle): ",rear_shaft_lg," mm");
 //fr::techo("Longueur du demi-arbre arrière (au milieu de la roue): ",rear_shaft_lg," mm");
@@ -772,8 +950,9 @@ techo("Rider 2 height: ",rider2_height," mm");
 techo("Rider 2 inseam: ", round(in_seam(rider2_height,rider2_leg_prop)), " mm");
 //fr::		techo("Hauteur de l'entrejambe",round(in_seam(rider_height,leg_prop)), "mm");
 }
-techo("Rear shock travel: ", round(tan(rsusp_ang)*rsusp_shock_pos), " mm");
-//fr::techo("Course amortisseur arrière: ", round(tan(rsusp_ang)*rsusp_shock_pos), " mm");
+if(rsusp_x) // there is a rear suspension
+	techo("Rear shock travel: ", round(tan(rsusp_ang)*rsusp_shock_pos), " mm");
+//fr::	techo("Course amortisseur arrière: ", round(tan(rsusp_ang)*rsusp_shock_pos), " mm");
 
 //== Program ====================
 if (view_type==view_flat)
@@ -788,24 +967,53 @@ else if (view_type==view_side) { //side view
 			print_spec(30);
 		t(-1000,-500)
 			print_spec2(30);
+		//signature and user text
+		print_text(200, -70);
+		t(1200,-70)
+			rotz(180)
+				print_info(30);
 	}
 }
-else if (view_type==view_top) //top view
+else if (view_type==view_top){//top view
 	projection() 
-		rotz(180) 
+		rotz(180)
 			3Dview();
-else if (view_type==view_front) //front view
+	if (disp_text) {
+	//signature and user text
+		print_text(200, -600);
+		//info
+		t(1200,600)
+			rotz(180)
+				print_info(30);
+	}
+}
+else if (view_type==view_front) { //front view
 	projection() 
-		r(0,90) 
+		r(-90,90) 
 			3Dview();
+	if (disp_text) {
+	//signature and user text
+		print_text(200, -600);
+		//info
+		t(1200,600)
+			rotz(180)
+				print_info(30);
+	}
+}
+else if (view_type==view_sidefairing)
+	fairing_proj();
+else if (view_type==view_fairing)
+	full_fairing(display_fairing);
 else { // 0 - 3D view
+	//hull() r(0,-80) scale(0.1)	fairing();
 	rotz(180) 3Dview(); 
 	print_text();
 }
-//== 3D view =================
+//== 3D view =======================
 module 3Dview () {
 	//ground
 	if (view_type!=view_top)
+	 if(display_ground)
 		gray() { 
 			cubex(wheel_base+1100,1200,d_line,-700);
 			if (dspl) // dimensions marks
@@ -813,35 +1021,43 @@ module 3Dview () {
 					cubez (1,222,6);
 		}
 	//
-	w_track();
-	if(dspl) arrow();
-	all_wheels();
+	if(dspl) {
+		arrow();
+		w_track();
+	}
+	all_wheels(true,false, !half_v);
 	//rear_shafts(display_shafts);
-	disp_rider();
 	disp_transmission();
-	steering (false,true,steering_rot);
-	
-	t(1200,400) // print ground info
+	steering(false,true,strot);
+	if (disp_text&&view_type<0)
+	t(1200,600) // print 3D ground info only in 3D view
 		rotz(180)
-			print_info(30);
+			linear_extrude(1)
+				print_info(30);
 	if (display_frame) {
 		tube_frame();
 		if (!front_wheel_track)
-			fork(-steering_rot, frame_pivot_height, c_fork);
-		cf_steer = 0.55; // shall be a parameter ??
+			fork(-strot, frame_pivot_height, c_fork);
 		if(!OSS_handlebar)
 			t(USS_x,0,USS_z)
 				r(0,USS_angle,180) {
-					rotz(-steering_rot*cf_steer)
+					rotz(-strot/cf_steer)
 						handlebar();
 					glinez(400);
 				}
 		//front light
 		pos_flight();
 	}
+	if(display_rear_frame)
+		rear_frame();
 	//rear suspension - check plane
 	if(rsusp_x && dcheck)
 		cubez (100,200,d_line, wheel_base,0,rwheel_hdia+rsusp_travel);
+	//---------------------
+	disp_rider();
+	//Print full fairing  (after other stuff to have transparency)
+	rotz(180)
+		full_fairing(display_fairing);
 }
 
 //== Flat view =================
@@ -860,7 +1076,7 @@ module flat_view () {
 	}
 	projection() {
 		// Steering blueprint
-		r(0,90-rake_angle)
+		r(0,90-caster_angle)
 			t(trail) {
 				steering(true, true, 0, true);
 				all_wheels(false, false); //front wheels only
@@ -872,7 +1088,7 @@ module flat_view () {
 		// Pivot
 		t(fwheel_hdia+50,600)
 			r(king_pin_angle)
-				r(0,-rake_angle)
+				r(0,-caster_angle)
 					t(trail) {
 						steering(true,false, -steering_rot, true);
 						all_wheels(false, false, false); //front wheels only
@@ -894,7 +1110,7 @@ module flat_view () {
 				glinez(fwheel_hdia,false);
 			// Arrows
 			tslz (fwheel_hdia)
-				r(0, rake_angle) {
+				r(0, caster_angle) {
 					t(-70) p_arrow(0,0,"B");
 					tslz (200)
 						p_arrow(90,0,"A");
@@ -902,7 +1118,7 @@ module flat_view () {
 		}
 	}
 //-- TEXT --------------------
-	t(-1950,-250)
+	t(-1950,-250) 
 		print_info(30);
 	t(-1950,780)
 		print_spec(30);
@@ -912,6 +1128,8 @@ module flat_view () {
 	t(400,600)
 		multiLine(["View A"],32, false, true);
 //fr::	multiLine(["Vue A"],32, false, true);
+	//Signature and user text
+	print_text(-1950, -600);
 }
 
 module BB () {
@@ -938,15 +1156,24 @@ module disp_transmission () {
 	if(display_transmission) {
 		t(BB_long_pos,0,BB_height) {
 			pedals(crank_arm_length,crank_angle,pedal_angle,chain_length, chain_angle,clb, cab);
-			if(rider2 && rider2_boom_extent!=0)
+			//vertical crank
+			if(rd2_vfold!=0)
+				pedals(crank_arm_length,vcrank_angle,vpedal_angle,0, chain_angle, 100, cab, true, false);
+			
+			//2nd crank set if display 2nd rider
+			if(display_rider>1 && rider2_boom_extent!=0)
 				r(0,frame_BB_angle)
 					t(-rider2_boom_extent) {
 						silver()
 							BB();
-						silver()
-							cylx(45,rider2_boom_extent);
-						r(0,-frame_BB_angle)
+						if(boom)
+							silver()
+								cylx(45,rider2_boom_extent);
+						r(0,-frame_BB_angle) 
 							pedals(crank_arm_length,crank_angle,pedal_angle,0, chain_angle, 100, cab, true);
+						//vertical crank
+						if(rd2_vfold!=0)
+							pedals(crank_arm_length,vcrank_angle,vpedal_angle,0, chain_angle, 100, cab, true, false);
 					}
 		}
 	}
@@ -963,31 +1190,31 @@ module disp_rider (){
 	cx = -6; cz = 112;
 	if(display_rider)
 		t(seat_front_distance,0,seat_height){
-			mirrory() 
-				veloRider(rider_height, c_rider, seat_angle, leg_angle-90, right_leg_fold, head_angle, leg_prop);
-			//seat
-			disp_seat();
-			if (rider2) {
+			if(display_rider!=2) {
+				mirrory() 
+					veloRider(rider_height, c_rider, seat_angle, leg_angle-90, right_leg_fold, head_angle, leg_prop, legspread=leg_spread, rt=rider_type, lgra=leg_ground_angle, armp = [arm_lift,arm_pinch,farm_lift,farm_pinch]);
+				//seat
+				disp_seat();
+			}
+			fold2 = rider_type==1?rd2_vfold:0;
+			//display second rider
+			if (display_rider>1) {
 				t(rider2_x_offset,0,rider2_z_offset) {
 					mirrory()
-						veloRider(rider2_height, c_rider2, seat_angle, leg_angle-90+rider2_leg_offset, rider2_right_leg_fold, head_angle, rider2_leg_prop);
+						veloRider(rider2_height, c_rider2, seat_angle, leg_angle-90+rider2_leg_offset, rider2_right_leg_fold, head_angle, rider2_leg_prop,fold2,rd2_rfolda,rd2_lfolda,leg_spread, rider_type,leg_ground_angle,[arm_lift,arm_pinch,farm_lift,farm_pinch]);
 					disp_seat();
 				}
 			}
-			//cubez(250,350,1); // check height
+			//cubez(250,350,1);//check height
 		}
 }
 
 module disp_seat () {
-	if(seat_type==1)
-		rans_seat(seat_angle, sflag=flag, light_color=c_light);
-	else if (seat_type==9)
-		mirrorx()
-			saddle(light_color=c_light);
+	b_seat(seat_type,seat_angle,0,flag,c_light);
 }
 
 // Line wheel symbol
-module wheel_symb (wh_d=0, top_symb=true, shaftlg=0) {
+module wheel_wireframe (wh_d=0, top_symb=true, shaftlg=0) {
 	diff() {
 		cyly(-16,d_line, 0,0,0, 12);
 		cyly(-12,10, 0,0,0, 12);
@@ -996,13 +1223,13 @@ module wheel_symb (wh_d=0, top_symb=true, shaftlg=0) {
 	glinex(disp=true);
 	gliney(disp=true);
 	if(shaftlg!=0) {
-		echo (shaftlg=shaftlg);
+		//echo(shaftlg=shaftlg);
 		gliney(-shaftlg, false, 0, true);
 	}
 	if(wh_d) {
 		diff() {
-			cyly(-wh_d,d_line, 0,0,0, 36);
-			cyly(-wh_d+2*d_line,10, 0,0,0, 36);
+			cyly(-wh_d,d_line, 0,0,0, 32);
+			cyly(-wh_d+2*d_line,10, 0,0,0, 32);
 		}
 		if(top_symb) //wheel ends on top view
 			dmirrorx()
@@ -1015,7 +1242,7 @@ module wheel_symb (wh_d=0, top_symb=true, shaftlg=0) {
 //-- display all wheels -------
 module all_wheels (rearw=true, top_symb = true, mirr=true) {
 	//front wheels
-	steer(-steering_rot,-steering_rot2) 
+	steer(-strot, -strot2) 
 		fwheel(top_symb);
 	if(front_wheel_track && mirr)
 		mirrory()
@@ -1024,18 +1251,18 @@ module all_wheels (rearw=true, top_symb = true, mirr=true) {
 		front_wheel_shaft(display_shafts);
 	//rear wheel(s)
 	if(rearw)
-	dmirrory(rear_wheel_track) 
-		t(0,rear_wheel_track/2)
-			r(rear_camb_a) {
-				rwheel_disp(0);
-				if(rsusp_x) { //rear_suspension
-					if(dcheck||view_type==view_flat|| display_rwheel_up)
-						rwheel_disp(rsusp_ang);
-					if(display_shafts&&display_frame)
-						color(c_steel) //???
-							cyly(-25,100, rsusp_x,0,rsusp_z);
+		dmirrory(rear_wheel_track) 
+			t(0,rear_wheel_track/2)
+				r(rear_camb_a) {
+					rwheel_disp(0);
+					if(rsusp_x) { //rear_suspension
+						if(dcheck||view_type==view_flat|| display_rwheel_up)
+							rwheel_disp(rsusp_ang);
+						if(display_shafts)
+							color(c_steel) //???
+								cyly(-25,100, rsusp_x,0,rsusp_z);
+					}
 				}
-			}
 				//t(wheel_base,0,rwheel_hdia)
 				//	rear_wheel();
 	//spa angle parameter to adjust spoke spacing, should be user accessible ??
@@ -1044,19 +1271,19 @@ module all_wheels (rearw=true, top_symb = true, mirr=true) {
 		t(0,fwt/2)
 			r(camb_ang)
 				tslz(fwheel_hdia)
-					if(display_wheels&&view_type!=view_flat) {
+					if(display_wheels==1&&view_type!=view_flat) {
 						wheel(front_wheel_rim,dcheck?max_fwheel_tire:front_wheel_tire,front_hub_dia,shaft_width=fwt?66:130,  spa=front_spoke_adj,spoke_nbr=front_spoke_nb);
 						if(display_frame&& display_fenders)
 							mirrorx()
 								fender(front_wheel_rim,dcheck?max_fwheel_tire:front_wheel_tire,fw_mud_front,fw_mud_rear,fwt?0:115);
 					}
-					else 
-						wheel_symb(fwheel_hdia*2,top_symb);
+					else if(display_wheels==2||view_type==view_flat)
+						wheel_wireframe(fwheel_hdia*2,top_symb);
 	}
 	//following double partly what is in steering() module  - for axis
 	module front_wheel_shaft (shaft=false) {
 		// Wheel shaft
-		steer(steering_rot,steering_rot2)
+		steer(strot, strot2)
 			fwshaft();
 		if(mirr)
 			mirrory()
@@ -1065,17 +1292,18 @@ module all_wheels (rearw=true, top_symb = true, mirr=true) {
 			d = shaft?15:d_line;
 			clrx = shaft?c_steel:"orange";
 			//line
-			color(clrx)
-				t(0,front_wheel_track/2)
-					r(camb_ang)
-						cyly(d,-shaft_length,0,0,fwheel_hdia, 16);
+			if(shaft||dspl)
+				color(clrx)
+					t(0,front_wheel_track/2)
+						r(camb_ang)
+							cyly(d,-shaft_length,0,0,fwheel_hdia, 16);
 		}
 	}
 } //all_wheels
 
 module rear_wheel () { // from axis position
 	shaft_dia = 18;
-	if (display_wheels&&view_type!=view_flat) {
+	if (display_wheels==1&&view_type!=view_flat) {
 		wheel(rear_wheel_rim,dcheck?max_rwheel_tire:rear_wheel_tire,28, shaft_width = 85, , spa=rear_spoke_adj, spoke_nbr=rear_spoke_nb);
 		if(display_frame&& display_fenders)
 			mirrorx()
@@ -1087,8 +1315,8 @@ module rear_wheel () { // from axis position
 			else
 				cyly(-shaft_dia,135+45, 0,0,0, 6);
 	}
-	else 
-		wheel_symb(rwheel_hdia*2,true,rear_wheel_track?rear_shaft_lg:0);
+	else if(display_wheels==2||view_type==view_flat)
+		wheel_wireframe(rwheel_hdia*2,true,rear_wheel_track?rear_shaft_lg:0);
 }
 
 //move wheel/rear frame according suspension angle 
@@ -1104,12 +1332,12 @@ module rwheel_move (ang = rsusp_ang) {
 module rwheel_disp (ang = rsusp_ang) {
 	rwheel_move (ang) {
 		rear_wheel();
-		if (rsusp_x)
+		if(rsusp_x) //lines for rear suspension
 			r(0,rear_arm_angle)
-			glinex(-rwheel_dist,false,0,true){
-				glinez();
-				gliney();
-			}
+				glinex(-rwheel_dist,false,0){
+					glinez();
+					gliney();
+				}
 	}
 };
 
@@ -1127,17 +1355,18 @@ module rear_shafts (shaft=true) {
 		gray()
 			if(rear_wheel_track) {
 				cyly(ds, -rear_shaft_lg);
-				wheel_symb(rwheel_hdia*2);
+				wheel_wireframe(rwheel_hdia*2);
 			}
 			else {
 				cyly(-ds,135+45, 0,0,0, 6);
 				gliney();
-				wheel_symb(rwheel_hdia*2);
+				wheel_wireframe(rwheel_hdia*2);
 			}
 	}
 }
 
 //-- display 3D steering -----------
+//next module only used in projection
 module steering (flat = false, mirr=true, rot=0, proj=false) {
 	if (mirr)
 		mirrory()
@@ -1150,17 +1379,16 @@ module steering (flat = false, mirr=true, rot=0, proj=false) {
 //steer origin is 0,0
 module steer (stro, stro2=0) {
 	t(axis_offset,front_wheel_track/2-king_pin_offset, pivot_height)
-		r(0,rake_angle)
+		r(0,caster_angle)
 			r(king_pin_angle)  {
 				stx(stro) children();
-				//2nd rotation position
-				if (stro2!=0) 
+				if (stro2) 
 					stx(stro2) children();
 			}
 	module stx(str1) {
 		rotz(str1)
 			r(-king_pin_angle)
-				r(0,-rake_angle)
+				r(0,-caster_angle)
 					t(-axis_offset,-front_wheel_track/2+king_pin_offset, -pivot_height)
 						children();
 	}
@@ -1170,12 +1398,12 @@ module hsteering (flat = false, srot=0, proj=false) {
 	//2nd cross length = 
 	td = frame_tube_dia;
 	//Ackerman angle as viewed in the plan perpendicular to steering axis
-	c_acker = atan(tan(ackermann_angle)/cos(rake_angle));
+	c_acker = atan(tan(ackermann_angle)/cos(caster_angle));
 	//echo ("Ackermann angle, angle calculated in other plane",ackermann_angle,c_acker);
 	
 	t(axis_offset,front_wheel_track/2-king_pin_offset, pivot_height) {
 		//king pin
-		r(0,rake_angle)
+		r(0,caster_angle)
 			r(king_pin_angle) {
 				//axis
 				glinez (fwheel_hdia*2+400, false,-steering_length);
@@ -1183,25 +1411,26 @@ module hsteering (flat = false, srot=0, proj=false) {
 				if (!proj && display_frame) rotz (-srot) {
 					color(c_frame) {
 						//head tube
-						tslz(frame_pivot_height-sin(rake_angle)*axis_offset) {
+						tslz(frame_pivot_height-sin(caster_angle)*axis_offset) {
 							duplz(head_tube_height)
 								glinex(80);
 							cylz(42,head_tube_height, 0,0,0, 24);
 						}
 						if (front_wheel_track)
 							tslz(frame_pivot_height+40)
-							r(-king_pin_angle)
+							r(cross_Y_angle)
 							r(0,cross_X_angle)
 							rotz(cross_rear_angle)
-							cyly(td,-cross_bend_dist, 0,0,0, 24)
-							tb_yx(td,-150,-cross_rear_angle, 24)
-							cyly(td,-cross_lg_adjust, 0,0,0, 24)
-						;
+							cyly(td,-cross_bend_dist, 0,0,0, 24) 
+							if(cross_lg_adjust) {
+								tb_yx(td,-150,-cross_rear_angle, 24)
+								cyly(td,-cross_lg_adjust, 0,0,0, 24);
+							}
 					}
 					dx=tire_diam(front_wheel_rim,max_fwheel_tire)+30;
 					rtx = (BB_long_pos<0)?0:180;
-					if (dcheck&&front_wheel_track==0)
-						tslz(-sin(rake_angle)*axis_offset)
+					if (dcheck)
+						tslz(-sin(caster_angle)*axis_offset)
 						rotz(-45+rtx){
 							rotate_extrude(angle=90, $fn=64)
 							t(sign(BB_long_pos)* perp_axis_offset)
@@ -1213,7 +1442,7 @@ module hsteering (flat = false, srot=0, proj=false) {
 								}
 						}
 					if(OSS_handlebar)
-						tslz(stem_height+frame_pivot_height+steerer_tube_length-sin(rake_angle)*axis_offset)
+						tslz(stem_height+frame_pivot_height+steerer_tube_length-sin(caster_angle)*axis_offset)
 							rotz(-srot)
 								handlebar();
 				}
@@ -1247,7 +1476,7 @@ module hsteering (flat = false, srot=0, proj=false) {
 					}
 					//Steering arm (bracket)
 					r(king_pin_angle) 
-					r(0,rake_angle) 
+					r(0,caster_angle) 
 					rotz(-c_acker) {
 						glinex(-arm_r_length,false);
 						duplx(-arm_r_length) 
@@ -1280,12 +1509,11 @@ module arrow () {
 }
 
 //== LIBRARY ===================
-module pedals (manlength=155, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot_lg=900,bot_ang=5, extent=false) {
+module pedals (manlength=155, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot_lg=900,bot_ang=5, extent=false, chain=true) {
 	cr2 = crankshaft_width/2;
 	//chainring diam
 	dch = chainring_teeth*12.7/PI;
 	//wheel sprocket diam
-	sprocket_teeth = 19;
 	dsp = sprocket_teeth*12.7/PI;
 	idler_teeth = 15;
 	dpl = idler_teeth*12.7/PI;
@@ -1329,26 +1557,32 @@ module pedals (manlength=155, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot
 		crank_arm(cr2,0);
 	mirrory()
 		r(0,180)
-			crank_arm(cr2,6);
+			crank_arm(cr2,7);
+	}
+//all front chainline
+	if (chain) {
 		//chainring
 		t(0,chainline_position)
-		color(c_steel) diff() {
-			cyly(-dch,5);
-			//::::::::::
-			droty (60, nb=5)
-				hull() {
-					cyly(-18,66,0,0,30);
-					dmirrorx()
-						cyly(-24,66, chainring_teeth-30,0,dch/2-28);
-				}
-		}
-	}
-	/*/idler
-	if (top_lg)
-		black() //Idler
-			r(0,top_ang) 
-				cyly(-68,20, top_lg,chainline_position,dch/2+dpl/2); */
-	
+			color(c_steel) diff() {
+				cyly(-dch,5);
+				//::::::::::
+				droty (60, nb=5)
+					hull() {
+						cyly(-18,66,0,0,30);
+						dmirrorx()
+							cyly(-24,66, chainring_teeth-30,0,dch/2-28);
+					}
+			}
+	if(dcheck)
+		red()
+		r(0,-20)
+		tslz (-90)
+		duplz(80,2) 
+		dmirrory() 
+			diff() {
+				cyly(-2*crank_arm_length,100, 0,150,0,32);
+				cyly(-2*crank_arm_length+6,222, 0,150,0, 32);
+			}
 	
 	//driving chain idler
 	if(top_lg) 
@@ -1402,6 +1636,10 @@ module pedals (manlength=155, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot
 				r(0,-60)
 					t(0,0,-dsp/2) {
 						tb_xz(10,dsp/2,-190+50, 6);
+					if(single_speed) 
+						tb_xz(10,dsp/2,60+chain_rear_bot_angle, 6)
+						cylx(10,-chain_rear_bot_length,0,0,0, 6);
+					else //dérailleur
 						cylx(10,-60, 0,0,0, 6)
 						tb_xz(10,-24,71.5, 6)
 						cylx(10,-28,0,0,0, 24)
@@ -1409,12 +1647,13 @@ module pedals (manlength=155, cr_ang=-35, ped_ang=90, top_lg=900, top_ang=13,bot
 						tb_xz(10,24,166-25+chain_rear_bot_angle, 6)
 						cylx(10,-chain_rear_bot_length,0,0,0, 6);
 						//wheels
-						cyly(-45,3, -60,0,-23, 24);
-						cyly(-45,3, -114,0,-37, 24);
+						if(!single_speed) {
+							cyly(-45,3, -60,0,-23, 24);
+							cyly(-45,3, -114,0,-37, 24);
+						}
 					}
-				//cylx(10,-chain_rear_bot_length, 0,0,-dsp/2);
 			}
-//	}
+	} //chainline
 }
 
 module fork (stro=0, flg=fwheel_hdia+55, clrf = "black") {
@@ -1422,17 +1661,15 @@ module fork (stro=0, flg=fwheel_hdia+55, clrf = "black") {
 	pao = perp_axis_offset;
 	sgn = sign(pao);
 	fang = acos((rad-abs(perp_axis_offset))/rad);
-	//echo(fang=fang);
 	lgstr = flg-88-rad*sin(fang);
 	hhang = atan(8/lgstr);
-	//echo (hhang=hhang);
 	fwhd = fwheel_hdia;
 	color(clrf)
 	t(axis_offset,0,fwhd) 
-		r(0,rake_angle)
+		r(0,caster_angle)
 			rotz(stro)
 				dmirrory()
-				t(-pao,54, -pao*tan(rake_angle)){
+				t(-pao,54, -pao*tan(caster_angle)){
 					diff(){
 						mirrorx(pao<0)
 							r(hhang)
@@ -1446,7 +1683,7 @@ module fork (stro=0, flg=fwheel_hdia+55, clrf = "black") {
 					cyly(-32,8);
 				}
 	t(0,0,fwhd)
-		r(0,rake_angle) {
+		r(0,caster_angle) {
 			color(clrf)
 				cylz(36,-40, pao,0,flg);
 			gray()
@@ -1457,8 +1694,7 @@ module fork (stro=0, flg=fwheel_hdia+55, clrf = "black") {
 module tube_frame (clrf=c_frame){
 	dt = frame_tube_dia;
 	br = frame_bend_radius;
-	boom = (BB_long_pos<-150) && frame_BB_offset==0;
-	boom_out = boom?50:0;
+	boom_out = boom&&frame_BB_offset==0?50:0;
 	prec= 24; //$fn for main tube
 	stprec = 16; //$fn
 
@@ -1471,17 +1707,12 @@ module tube_frame (clrf=c_frame){
 		cylx(frame_tube_dia,length, 0,0,0, prec)
 			children();
 	}
-	*t(0,0,-200)
-		fr_cyl(100, 0, 1)
-			tb_xz(dt,180,-abs(frame_front_bend_angle)) 
-			fr_cyl(300, 1, 0);
 	
-	
- t(BB_long_pos,0,BB_height) {
+	t(BB_long_pos,0,BB_height) {
 	 //geometry lines
-	glinez();
-	glinex(); 
-	//boom with bottom bracket and derailleur support
+		glinez();
+		glinex(); 
+		//boom with bottom bracket and derailleur support
 		if(boom)
 			silver() {
 				BB();
@@ -1491,6 +1722,20 @@ module tube_frame (clrf=c_frame){
 				r(0,18+chain_angle)
 					cylz(28,120,0,0,0, 16);
 			}
+		else if(front_wheel_track) //Tadpole trike
+			black() {
+				silver() BB();
+
+				r(0,frame_BB_angle)
+					tslz(frame_BB_offset){
+						if(frame_tube_ht)
+							cubex (80,frame_tube_dia+8,frame_tube_ht+8, -40);
+						else
+							cylx (-frame_tube_dia-8,80);
+					}
+			}
+		else //bicycle or delta trike
+			color(clrf) BB();
 		// saddle->upright bike
 		if(seat_type==9)
 			silver()
@@ -1498,22 +1743,20 @@ module tube_frame (clrf=c_frame){
 				cylx(dt-3,frame_seat_length+120, 0,0,0, prec); 
 	//--Frame itself -----------
 	color(clrf) {
-		//bottom bracket
-		if (!boom) BB();
 		r(0,frame_BB_angle)
 		tslz(frame_BB_offset){
 			// BB bracket
-			if (frame_BB_offset!=0)
+			if (frame_BB_offset!=0 && front_wheel_track==0)
 				hull(){
 					cubez(30,dt-2,1);
 					cubez(30,64,1,0,0,-frame_BB_offset);
 				}
 			//steer bracket
-			if(!boom && head_reinf_offset!=0)
+			if(!boom && head_reinf_offset!=0&&front_wheel_track==0)
 				t(-frame_front_extent)
 					hull() {
 						cylx(dt-2,1, 90);
-						r(0,-frame_BB_angle+rake_angle)
+						r(0,-frame_BB_angle+caster_angle)
 							cylz(-38,head_tube_height-25, 0,0,head_reinf_offset);
 					}
 			//-- Main frame sequence ------
@@ -1554,10 +1797,14 @@ module tube_frame (clrf=c_frame){
 		}
 	}
  }
- rear_wheel_support(0, clrf);
+ 
+} 
+
+module rear_frame(clrf=c_frame) {
+	rear_wheel_support(0, clrf);
  if((dcheck||display_rwheel_up) && rsusp_x)
 	 rear_wheel_support(rsusp_ang, clrf);
-} 
+}
 
 //-- rear wheel support -------
 module rear_wheel_support (susp_ang=0, clrf=c_frame) {
@@ -1573,8 +1820,10 @@ module rear_wheel_support (susp_ang=0, clrf=c_frame) {
 		//t(wheel_base,0,rwheel_hdia) {
 		//chain stays
 			t(0,stay_dia/2-6,stay_dia/2+12)
-				r(0,chain_stay_angle, chain_stay_v_ang)
-					cylx(stay_dia,-chain_stay_length+60, 30,0,0, stprec)
+				r(0,chain_stay_angle)
+					cylx(stay_dia,-60, 30,0,0, stprec)
+					tb_xy (stay_dia,-5*stay_dia,chain_stay_v_ang, stprec)
+					cylx(stay_dia,-chain_stay_length+130, 0,0,0, stprec)
 						tb_xy (stay_dia,-5*stay_dia,40, stprec)
 							cylx(stay_dia,-20, 0,0,0, stprec);
 			//dropouts
@@ -1595,9 +1844,9 @@ module rear_wheel_support (susp_ang=0, clrf=c_frame) {
 				}
 			//seat stays - only if they have a length
 			if(seat_stay_length)
-			t(15,stay_dia/2-6,stay_dia/2+20)
+			t(10,stay_dia/2-6,stay_dia/2+15)
 				r(0,seat_stay_angle, seat_stay_v_ang)
-					cylx(stay_dia,-seat_stay_length+60, 15)
+					cylx(stay_dia,-seat_stay_length+65, 10)
 						tb_xy(stay_dia,-5*stay_dia,40)
 							cylx(stay_dia,-20);
 	}
@@ -1656,21 +1905,21 @@ module pos_flight () {
 	//steerer top
 	if (c_light)
 	if (flight_pos==1) {
-		steer(-steering_rot,-steering_rot2)
+		steer(-strot,-strot2)
 		mirrorx()
 		tslz(fwheel_hdia)
-		r(0,-rake_angle)
+		r(0,-caster_angle)
 			t(-perp_axis_offset,0,frame_pivot_height+steerer_tube_length-12)
-				front_light(rake_angle, 1, c_light);
+				front_light(caster_angle, 1, c_light);
 	}
 	//fork 
 	else if(flight_pos==2) {
-		steer(-steering_rot,-steering_rot2)
+		steer(-strot)
 		mirrorx()
 		tslz(fwheel_hdia)
-		r(0,-rake_angle)
+		r(0,-caster_angle)
 			t(-perp_axis_offset+16,0,frame_pivot_height)
-				front_light(rake_angle, 2, c_light);
+				front_light(caster_angle, 2, c_light);
 	}
 	// boom
 	else if(flight_pos==3) {
@@ -1754,7 +2003,7 @@ module rear_shock (dist = 190, travel=50, sag=10) {
 	}
 }
 
-//== Information ====================
+//== Information ===================
 //-- Information text -------------
 module techo (var1, var2="",var3="", var4="",var5="",var6="", var7="",var8="") {
   if (inf_text) {
@@ -1762,9 +2011,6 @@ module techo (var1, var2="",var3="", var4="",var5="",var6="", var7="",var8="") {
     echo(txt);
   }  
 }
-
-//debug echo
-debug=true;
 
 module decho (text, var) {
 	if(debug)
@@ -1798,11 +2044,28 @@ module print_info (size = 30) {
 	, size);
 }
 
-module print_text () {
-	if(disp_text) black()
-		t(text_xpos,0,65)
-			r(90) 
-				multiLine(usertxt,30,false);
+module print_text (xpos=200, ypos = -65) {
+	//-- Signature ---------
+	if(disp_text) {
+		if (view_type <=0) {// 3D view
+			black() {
+				t(-400,-700)
+					r(45)
+						linear_extrude(5) {
+							text(txtsign, 25);
+							t(-900)
+							multiLine(usertxt,30,false);
+						}
+			}
+		}
+		// top or side view
+		else 
+			t(xpos,ypos) {
+				text(txtsign, 26);
+				t(0,-60)
+					multiLine(usertxt,30,false);
+			}
+	}
 }
 
 module print_spec (size = 30) {
@@ -1841,9 +2104,428 @@ module print_spec2 (size = 30) {
 	,size,false);
 }
 
-//== LIBRARY ========================
+//== FAIRING Module =================
+//t(0,600,300) fairing_frame(2,true);
 
-//-- Geometry lines -----------------
+module fairing_frame (nfr=1, fold=true, thkx=0, bub=true) {
+	foldang = fold?bfold[nfr]:0;
+	diff() {
+		brf(nfr,thkx,bub);
+		if(foldang)
+			cubez(10,1999,1999, 0,0,bfoldo[nfr]);
+	}
+	if (foldang) 
+		tslz(bfoldo[nfr]) 
+			r(0,foldang) diff() {
+				tslz(-bfoldo[nfr])
+					brf(nfr,thkx,bub);
+				cubez(10,1999,-1999);
+			}
+}
+
+module brf (nfr=1, thkx=0, bub=true) {
+	thk = thkx>0?thkx:0;
+	t = thkx==-1?-0.01:0.01; // thk==-0.01, end face of external volume
+	prec=$preview?(half_v?36:48):64;
+	precb=$preview?(half_v?96:128):192;
+	$tk = t;
+	//'bulb' radius
+	rdb = 120-thk;
+	//middle bubble offset
+	mzoa = 100;
+	//main radius
+	rd = brd[nfr]-thk;
+	//side bulge radius
+	wrd = bwrd[nfr]?bwrd[nfr]-thk:0;
+	//top bulge radius
+	wrdt = bwrdt[nfr]?bwrdt[nfr]-thk:0;
+	//top radius
+	rdt = wrd?rd:brdt[nfr]-thk;
+	//width
+	wd = max(bwd[nfr],2*rd)-2*thk;
+	//top width
+	wdt = max(bwd[nfr]-bpinch[nfr],2*rdt)-2*thk;
+	//main height
+	ht = bht[nfr]-2*thk;
+	//top bubble width
+	bubwd= max(bblwd[nfr],2*rdb)-2*thk;
+	bubht= bblht[nfr]-thk;
+	dw = (wdt-wd)/2;
+	dh = ht-2*rd;
+	//side angle (for equal radiuses)
+	sang = atan(dw/dh);
+	tbdist = sqrt(pow(dw,2)+pow(dh,2));
+	wang = asin((tbdist/2)/(wrd-rd));
+	wdist = cos(wang)*(wrd-rd);
+	//top bulge angle normal
+	ttang1 = asin((wdt/2-rdt)/(wrdt-rdt));
+	//top bulge angle top bubble
+	ttang2 = asin((bubwd/2-rdb)/(wrdt-rdb));
+	
+	istopbub = bubwd>0&&bubht>0&&bub;
+	ttang= istopbub?ttang2:ttang1;
+	mintoprad = istopbub?bubwd/2:wdt/2;
+	tbulgeht = istopbub? 
+		ht/2+bubht-rdb-(wrdt-rdb)*cos(ttang2):
+		ht/2-rdt-(wrdt-rdt)*cos(ttang1);
+	
+	// echo (str("istopbub=",istopbub,"  ttang=",ttang,"  wrdt=",wrdt,"tbulgeht=",tbulgeht));
+	
+	//Side bulge radius side extension
+	module dwrd() {
+		if(wang==wang)//wang is a number
+			t(0,wd/2-rd,-ht/2+rd) {
+				r(-sang) {
+					t(0,-wdist,tbdist/2)
+						diff() {
+							cyl2(wrd*2,0,0,precb);
+							//::::::::::::::
+							r(wang)
+								cubez(10,2.5*wrd,1.5*wrd);
+							r(-wang)
+								cubez(10,2.5*wrd,-1.5*wrd);
+							cubey(10,-wrd,2*ht,0,wrd-rd);
+						}
+					}
+				}
+			else if(wrd)
+				echo(str("for frame ",nfr," side bulge radius ",wrd," is not compatible with other radiuses"));
+			//fr::			echo(str("pour le couple ",nfr," Le rayon ",wrd," du ventre latéral n'est pas compatible avec les autres rayons"));
+	}
+	
+	module cyl2 (d=10,h=0,w=0, pr=prec){
+		cylx(d,$tk, 0,w,h, pr);
+	}
+
+	hull() {
+		//top bulge
+		if(wrdt>0&&(ttang==ttang))
+			tslz(tbulgeht) 
+				diff() {
+					cyl2(wrdt*2,0,0,precb);
+					//:::::::::::::
+					r(-ttang)
+						cubey (10,999,1999);
+					r(ttang)
+						cubey (10,-999,1999);
+				}
+		if(!(ttang==ttang)&&wrdt>0)
+			echo(str("for frame ",nfr," top bulge radius ",wrdt," is not compatible with other dimensions, minimum radius is: ",mintoprad));
+			//fr::			echo(str("pour le couple ",nfr," Le rayon ",wrdt," du ventre supérieur n'est pas compatible avec les autres dimensions, le rayon minimum est: ",mintoprad));
+		dmirrory(){
+			//top bubble
+			if(istopbub)
+				cyl2(rdb*2, 
+					,ht/2+bubht-rdb, bubwd/2-rdb);
+			//top
+			cyl2(rdt*2,ht/2-rdt, wdt/2-rdt);
+			//side bulge
+			dwrd();
+			// bottom
+			cyl2(rd*2,-ht/2+rd,wd/2-rd);
+		}
+	}
+}
+
+//-----------------------------
+module fairing_seg (nseg, thk=0) 
+{
+	prec = half_v?48:64;
+	foldf = bfold[nseg];
+	foldr = bfold[nseg+1];
+	foldfo = bfoldo[nseg];
+	foldro = bfoldo[nseg+1];
+	fa = bang[nseg];
+	ra = bang[nseg+1];
+	fzo = bzpos[nseg+1]-bzpos[nseg];
+	lgs = blg[nseg]-(nseg?0:noselrd);
+	lg = -lgs+(thk?2:0);
+	thke = thk>0?thk:-0.01; //-1 indicate end face of external volume
+	bubblef = bblct[nseg]==-1?false:true;
+	bubbler = bblct[nseg+1]==1?false:true;
+	//next only for nose
+	wd = bwd[0]-2*thk;
+	ht = bht[0]-2*thk;
+	rd = brd[0]-thk;
+
+	diff() {
+		hull(){
+			r(0,fa) 
+				if(nseg>0)
+					fairing_frame(nseg, true, thk,bubblef);
+				else //0 is nose
+					dmirrory() { 
+					t(0,wd/2-rd,ht/2-rd)
+						r(0,-fa)
+							scale([fnosecf,1,1])
+								sphere(rd, $fn=prec);
+					t(0,wd/2-rd,-ht/2+rd)
+						r(0,-fa)
+							scale([fnosecf,1,1])
+								sphere(rd, $fn=prec);
+				}
+			//next 0.1 move is to overlap volumes to avoid non-manifold results
+			t(lg-0.1,0,fzo) 
+				r(0,ra)
+					fairing_frame(nseg+1,true,thke,bubbler);
+			if(froofseg&&froofseg==nseg)
+				t(-froofx,0,bht[nseg]/2+froofz)
+					scale([froofcf,1,froofvcf])
+						sphere(froofwd/2, $fn=128);
+
+		} //hull 
+		//::::::::::::::::
+		// cut front fold
+		if (nseg>0)
+		r(0,fa){
+			tslz(foldfo) {
+				cubex(999,999,900, 0,0,-450);
+				r(0,foldf)
+				cubex(999,999,900, 0,0,450); 
+			}
+		}
+		// cut rear fold
+		t(lg-0.1,0,fzo)	r(0,ra){
+			tslz(foldro) {
+				cubex(-999,999,900, 0,0,-450);
+				r(0,foldr)
+				cubex(-999,999,900, 0,0,450); 
+			}
+		}
+	}
+}
+//--------------------------------
+module all_frames (nb=5) {
+	xpos =[0,0, 
+		bwd[1]/2+bwd[2]/2+200,
+		bwd[1]/2+bwd[2]+bwd[3]/2+400,
+		bwd[1]/2+bwd[2]+bwd[3]+bwd[4]/2+600,
+		bwd[1]/2+bwd[2]+bwd[3]+bwd[4]+bwd[5]/2+800,
+		bwd[1]/2+bwd[2]+bwd[3]+bwd[4]+bwd[5]+bwd[6]/2+1000
+	];
+
+	module sec(sec=1,bub=true) {
+		diff() {
+				r(0,90) 
+					hull()
+						fairing_frame(sec, false, 0, bub);
+				cubez (50,4,10, 25,0,-5);
+				cubez (4,50,10, 0,-25,-5);
+			// level zero line
+				t(-bzpos[sec],0,-5) {
+					cubez (3,300,10);
+					cubez (40,3,10);
+					cubez (40,3,10,0,150);
+					cubez (40,3,10,0,-150);
+				}
+				tslz(-5)
+				linear_extrude(10) {
+					t(15,-15)
+						rotz(-90)
+							text(str(sec),30);
+					t(10,10)
+						rotz(-90)
+							text(str(bang[sec]),25, halign="right");
+				}
+				// folding line
+				if (bfold[sec]) {
+					t(bfoldo[sec])
+						cubez (4,1555,10, 0,0,-5); 
+				}
+		}
+	}
+
+  for(i=[1:nb]) {
+		t(-xpos[i],1000+bzpos[i]) {
+			rotz(90)
+				sec(i);
+			if(bblct[i])
+				t(0,-bht[i]-150)
+					rotz(90)
+						sec(i, false);
+		}
+	}
+}
+//-------------------------------
+module fairing_proj () {
+	projection() {
+		all_frames();
+		t(0,-1000) {
+			r(-90)
+				diff() {
+					full_fairing();
+					//:::::::::
+					t(fairing_x,0,fairing_z)
+						for (fr=[1:6])
+							if(bposx[fr]!=undef && bzpos[fr]!=undef && bang[fr]!=undef)
+							t(bposx[fr],0,bzpos[fr])
+								r(0,bang[fr])
+									tslz(bfoldo[fr]) {
+										cubez (4,1555,-999);
+										r(0,bfold[fr])
+											cubez (4,1555,999);
+									}
+						//fairing elevation
+						cubez (3500,1555,4, -500,0,fairing_z-2);
+					}
+			//ground
+			cubez (3500,4,20, -500);
+		}
+	}
+}
+
+//--------------------------------
+module fairing (vtype, clr) {
+	fwdi = wheel_diam(front_wheel_rim,max_fwheel_tire)+50;
+	rwdi = wheel_diam(rear_wheel_rim,max_rwheel_tire)+50;
+	rs = froofseg;
+	dzr = (bzpos[rs+1]-brd[rs+1])-(bzpos[rs]-brd[rs]);
+	aroof = atan(dzr/blg[rs]);
+	
+	//make windscreen cut
+	module ws_cut () {
+		diff(){
+			tslz(bht[rs]/2-brd[rs]/2)
+				r(0,aroof)
+					cubez(2999,1888,1999, -444);
+			//:::::::::::::
+			t(-froofx,0,froofz+bht[rs]/2)
+				r(0,ws_ang)
+					cubez(4999,1999,1999);
+		}
+	}
+	//display one segment
+	module fairing_s (seg=1, thk=0) {
+		if(bdisp[seg]) 
+			t(bposx[seg]+fairing_x,0,fairing_z+bzpos[seg])
+				diff() {
+					fairing_seg(seg,thk);
+					//:::::::::::::
+					if (rs&&rs==seg&&$preview&&disp_ws)  // there is a roof so we cut top part
+						ws_cut();
+				}
+	} //fairing_s
+	
+	//windscreen
+	if(rs&& bdisp[rs]&&$preview&&disp_ws) 
+		color(c_glass)
+		t(bposx[rs]+fairing_x,0,fairing_z+bzpos[rs]-($preview?0.6:0)) // height offset for color
+			diff(){
+				fairing_seg(rs);
+				//:::::::::::::
+				//bottom cut located at half of top circle (not top bubble)
+				tslz(bht[rs]/2-brd[rs]/2)
+					r(0,aroof)
+						cubez(2999,1888,-1999, -444);
+				//top cut at roof level, angled -3°
+				t(-froofx,0,froofz+bht[rs]/2)
+					r(0,ws_ang)
+						cubez(4999,1999,1999, -555);
+			}
+	//Nose
+	if(bdisp[0])
+		color(clr[1]) render() diff() {
+			fairing_s(0); //nose
+			//::::::::::::
+			if (vtype>1) //shell
+				t(-3) 
+					fairing_s(0,4);
+			if(vtype==2) //half cut
+				cubey(6666,999,4444, 0,0,1555);
+		}
+	//Main fairing
+	color(clr[0])
+		diff(){
+			for(seg=[1:6]) 
+				fairing_s(seg);
+			//:::::::::::::
+			wheel_well(fwdi,front_wheel_track/2-150-dp_well,60,rwdi);
+			if(vtype==2)
+				cubey(6666,999,4444, 0,0,1555);
+			if(vtype>1) //shell
+				diff(){
+					t(-3)
+						for(seg=[1:6]) 
+							fairing_s(seg,4);
+					//:::::::::::
+					wheel_well(fwdi+5,front_wheel_track/2-155-dp_well,60, rwdi+5);
+				}
+		}
+}
+
+//======================================
+module full_fairing (vtype=1) {
+	//cyly(-100,800, -190,0,700); // width check
+	if(vtype>0) diff() { //3D view (full or shell)
+		u() {
+			fairing(vtype,fairing_color);
+			// wind deflector
+			if(bscreen_x!=0) 
+				color(fairing_color[2])
+				t(bscreen_x,0,bscreen_z)
+					r(0,-50)
+						diff(){
+							cylz(320,280, 0,0,0, 64);
+							//::::::::
+							// top face cut
+							r(0,15)
+								cubez(444,444,200, 0,0,230);
+							// bottom cut
+							r(0,60)
+								cubez(555,444,-333, 0,0,120);
+						}
+		} //:: cut fairing frame :::::::::::::
+		cubex(2999,1999,2999, fairing_cut_x,0,1333);
+		cubez(4999,1999,1999, 333,0,fairing_cut_z);
+	}
+	else if(vtype==-1)
+		fairing_proj();
+}
+
+module wheel_well (fdia=570, pos = 290, fvt= 60, rdia = 560, rvt=100, rang = 0) {
+	// front well
+	dmirrory() {
+		t(0,pos,fwheel_hdia)
+		diff(){
+			hull()
+				duplz(70+fvt)
+					cyly(fdia,300,
+						0,-60,-70, 64);
+			//internal 'V' shape
+			r(camber_angle,-13)
+				t(20,60){
+					rotz(-29)
+						cubex(333,120,777,
+							0,-60);
+					rotz(36)
+						cubex(-333,120,777,
+							0,-60);
+				}
+			// enlarge in front of wheels
+			cubey(444,-80,666, 222,-60+25);
+		}
+	}
+	//-- rear wheel well ------
+	t(-wheel_base, 0,rwheel_hdia) {
+		r(0,rang)
+			hull() 
+				duplz(100+rvt){
+					cyly(-rdia,120,
+						0,0,-100, 48);
+					cyly(-150,180,
+						0,0,-100, 48);
+				}
+	}
+}
+
+/*/ Length eval
+duplx (-1000, 3) cubex (5, 100,30, 1000);
+cylx (100, -2520, 965,0,300);
+cyly (-100, 400, -150,0,150);
+//*/
+
+//== LIBRARY =======================
+//-- Geometry lines ----------------
 module glinex (length=50, ctr=true, off=0, disp=dspl) {
 	if(disp)
 		cylx(d_line*(ctr?-1:1), length, off,0,0, 4)
@@ -1860,7 +2542,8 @@ module glinez (length=50, ctr=true, off=0, disp=dspl) {
 		cylz(d_line*(ctr?-1:1), length, 0,0,off, 4);
 }
 
-//-- Rectangle extrusion & rotation --
+//-- Rectangular tube handling --
+//--Rectangle extrusion & displacement --
 module rctx (height=10, width=10, length=10, x=0, y=0, z=0) {
 	t(x+length/2,y,z) {
 		cube([abs(length),width,height], center=true);
@@ -1870,7 +2553,7 @@ module rctx (height=10, width=10, length=10, x=0, y=0, z=0) {
 }
 
 //Rotation of rectangular tube on y
-//ht shall be negative if former segment negative (to merge tubes
+//ht shall be negative if former segment negative (to merge tubes)
 module rrcty(ang=0, height=10, line=false, thk_line=d_line) {
 	t(0,0,sign(ang)*height/2) {
 		//cyly(-2,100);
@@ -1884,7 +2567,7 @@ module rrcty(ang=0, height=10, line=false, thk_line=d_line) {
 }
 
 //Rotation of rectangular tube on z
-//width shall be negative if former segment negative (to merge tubes
+//width shall be negative if former segment negative (to merge tubes)
 module rrctz(ang=0, width=10, line=false, thk_line=d_line) {
 	if(line)
 	t(0,sign(ang)*width/2) {
@@ -1898,3 +2581,5 @@ module rrctz(ang=0, width=10, line=false, thk_line=d_line) {
 				children();
 	}
 }
+
+//== The end =====================

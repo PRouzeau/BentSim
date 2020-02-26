@@ -1,7 +1,8 @@
 Modéliser un vélo couché  (c) Pierre ROUZEAU CC BY-SA 4.0
 Pour pouvoir modéliser un vélo, il faut d'abord avoir installé l'application
 BentSim en suivant les recommandations du fichier 'Lisez_moi.txt' et de la
-page Internet  http://rouzeau.net/OpenSCAD/Applications
+page Internet  http://rouzeau.net/OpenSCAD/Applications .
+Sur Windows, utilisez l'installateur et pas les versions 'zip'
 
 Pour modéliser un vélo, il est recommandé de partir d'un des exemples.
 Une fois choisi votre exemple, créez un nouveau jeu de données en appuyant
@@ -27,6 +28,7 @@ le deuxième cycliste le long d'une 'glissière de siège' ou de déployer une
 bôme et un deuxième pédalier sera affiché en complément du premier.
 Ces deux actions peuvent être simultanées. L'angle de déploiement de la bome
 est celui de la poutre en arrière du pédalier défini dans l'onglet [Cadre].
+Le type de siège est défini dans cet onglet.
 
 L'onglet [Affichage] permet de sélectionner les parties que l'on souhaite
 afficher. En sus des élément mécaniques et du cycliste, on peut afficher les

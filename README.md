@@ -3,6 +3,8 @@ Recumbent Simulator
 
 This OpenScad application is intended to make blueprints and 3D model of
  a recumbent bike, trike or quadricycle with full geometry and steering.
+ It does now have a module to create a segmented fairing, in the same style
+ as aircraft aluminium fuselage
 
 It is mainly thought for human powered cycles, but you can also use it
  for larger motorised machines.
