@@ -101,13 +101,12 @@ hdpow = 0.4;
 //Limb and body size proportional power
 szpow = 0.6;
 
-
 //function prop_rider (rsize) = (rsize-head)/7/head;
 function in_seam (rsize,lprop) = 3.6*(rsize-head)/7+lprop*lpcoef*head/2;
 
 if (r_type) {
 	prop = (r_height-head)/(ref_height-head);
-	$hdprop = ((r_height/hd)/15)^hdpow;
+	$hdprop = pow(((r_height/hd)/15),hdpow);
 	$hdr = $hdprop*hd;
 	top = 5.4*hd*prop+$hdr-lpcoef*hd*l_prop;
 	bot = top-r_height;
@@ -139,7 +138,7 @@ $rfolda = rfolda;
 $legspread = legspread;
 $rider_t = rt;
 //real head half height, partly proportional to size
-$hdprop = ((r_height/hd)/15)^hdpow;
+$hdprop = pow(((r_height/hd)/15),hdpow);
 $hdr = $hdprop*hd;
 seat_ang = rt==r_stood?90:s_ang; //3: stood
 leg_ang = rt==r_stood?-90:l_ang; //3: stood
@@ -170,7 +169,7 @@ rda = rt==r_stood?-180:rad_ankle;
 //echo("Rider height",rh);
 prop = (rh-head)/(ref_height-head);
 //echo(prop=prop);
-$sz = hd*prop^szpow;
+$sz = hd*pow(prop,szpow);
 //echo($sz =$sz);
 inseam = in_seam(rh,leg_prop);
 riderdxz = 0.8*(hd-$sz); // correction for body size
