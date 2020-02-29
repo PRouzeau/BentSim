@@ -196,7 +196,6 @@ if(rider_check)
 hand=[0.6,0.8,1.7]; //orientation vector
 legLength = hd*3.84*prop+leg_prop*lpcoef/2*hd; //Thigh length, equal to lower leg 
 armLength = hd*3.2*prop; // 
-footLength = hd; //not real length, only ref 
 
 color($torsocolor) { 
 // go to top hip
@@ -315,7 +314,7 @@ module leg (legSpread,kneeLift,kneeBend,footPos) {
 					color($shoecolor)
 						ts(0,0,0.01*hd+legLength)
 							rotate([footPos[0],footPos[1],footPos[2]]) 
-								foot(legLength*0.38);
+								foot(legLength*0.41);
 								//echo("prop leg",prop);
 				}
 		}
