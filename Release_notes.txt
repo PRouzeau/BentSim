@@ -17,6 +17,7 @@ BentSim   Recumbent cycle simulator © 2019-2021 Pierre ROUZEAU Licence GPL V3
 - Can now have user programmed forks and frame. This needs to create an OpenSCAD program.
 - Color of rim, hub and spokes can be modified (unique for all)
 - Boom have now the same section profile as frame tube (so now can be rectangular)
+- Improvements in Customizer dataset management macros 
 Fixes:
 - Rans seat viewing problem solved. 
 - Tire color now have effect
