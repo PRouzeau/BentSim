@@ -1,9 +1,11 @@
 GEOMETRY AND MODELING OF A RECUMBENT
+Complete user manual: http://rouzeau.net/bentsimh
+
 This application is made to design the geometry of a recumbent
 bicycle, tricycle or quadricycle and in particular its steering blueprint.
 It simply generates the blueprint and does not make any calculations (except for
 the trail and "wheel flop").
-The steering is designed according to pure Ackermann geometry.
+The steering is designed according to pure Ackermann geometry with possible adjustment.
 This application uses OpenSCAD as a visualization engine.
 After defining the geometry, you must project the model in order to be able to
 export it in DXF format, usable in any CAD software.
@@ -39,7 +41,7 @@ This application need to have prealably installed OpenSCAD (a free parametric
 * http://www.openscad.org/downloads.html#snapshots
 Snapshot versions of OpenScad are recommended as they are frequently updated
  and are reliable.
-*You shall at least use the last official version (2019.05).
+*You shall at least use the last official version (2021.01).
 *All files shall be installed in a directory on your computer, though you
  don't really need the 'Images' directory to run the app.
 
@@ -119,7 +121,7 @@ and import individual dataset with macros in a Libre Office text document.
 You shall have Libre Office installed on your machine. The document is:
 'Dataset_macros.odt'
 
-Copyright 2019 Pierre ROUZEAU, AKA "PRZ"
+Copyright 2019-2021 Pierre ROUZEAU, AKA "PRZ"
 Program license GPL 3.0
 documentation licence cc BY-SA 4.0 and GFDL 1.2
 This uses my OpenSCAD library, attached, but if curious you can find details here:

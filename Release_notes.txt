@@ -1,7 +1,28 @@
-BentSim   Recumbent cycle simulator © 2019-2020 Pierre ROUZEAU Licence GPL V3
-Release notes 
-February, 26,  2020:
-– Add this ‘release notes’ file
+BentSim   Recumbent cycle simulator © 2019-2021 Pierre ROUZEAU Licence GPL V3
+*March, 30, 2021
+- Creates an help manual with my own app 'Aquilegia' - English only - beware that OpenSCAD menus have evolved and screens copies are according new version. Minor improvements to the Aquilegia help engine.
+- Delta trike tilting system, Jetrike style, that I did following test of one
+- Single sided rear arm possible - not very detailed. 
+- Indirect front wheel drive possible. 
+- Trike steering Ackermann compensation is now adjustable (required for not vertical pivot axis - say all modern vehicles...)
+- Add possibility to MANUALLY adjust right/left steering to validate Ackermann.
+- Wheels can now be casted (3,4,5,6 or 8 spokes)
+- Added optional suspension fork (and an experimental articulated 'Lefty').
+- Added examples and updated all others. 
+- Grouped Knuckle/Fork data in a new tab. 
+- U-bar can now be bended in its center (for under seat use, as I tested on my Velassi).
+- Can add mid-drive motors -Tongsheng TSDZ2 and Bikee 'The lightest',supposedly available in summer 2021 -. Some examples incorporate them (with batteries)
+- Wheel spokes are now asymetric if there is a dérailleur transmission.
+- Stays bends angle are now adjustable. 
+- Can now have user programmed forks and frame. This needs to create an OpenSCAD program.
+- Color of rim, hub and spokes can be modified (unique for all)
+- Boom have now the same section profile as frame tube (so now can be rectangular)
+Fixes:
+- Rans seat viewing problem solved. 
+- Tire color now have effect
+
+*February, 26,  2020:
+– Add the ‘release notes’ file
 - Added two seats: ICE mesh seat and Hardshell seat (fictive) – Examples modified with these news seats
 - Added possibility to create a fairing in segment, like aircraft aluminium fuselages
 - Wheels can now have a fairing
@@ -29,13 +50,17 @@ Examples:
 Added three faired examples:
 - 1 Velomobile trike
 - 1 Streamliner (bicycle)
-- 1 faired trike with front box,  ‘Cargomobile’ (named coined by ‘Diagonale’ on the french forum Velorizontal).
+- 1 faired trike with front box, ‘Cargomobile’ (named coined by ‘Diagonale’ on the french forum Velorizontal).
 
 - Removed ‘Pocket’ trike, replaced by ‘mini trike’ foreseen for children and very small people.
 
-*November, 14, 2019 issue - Add rear suspension, miscellaneous bug corrections
-*November, 10, 2019 issue, The program was extended and renamed as ‘BentSim’, adding more complete modelisation and the capability to design a monotube Frame. It was correcting a mistake in the geometry. First seat is Rans Mesh seat. New model elements (Seat, handlebars, Lights) were issued from the ‘Velassi’ model. Significant work was done to improve the rider model accuracy. Front Fork is a new design.
+==November, 14, 2019 issue 
+- Add rear suspension, miscellaneous bug corrections
+*November, 10, 2019 issue
+- The program was extended and renamed as ‘BentSim’, adding more complete modelisation and the capability to design a monotube Frame. It was correcting a mistake in the geometry. First seat is Rans Mesh seat. New model elements (Seat, handlebars, Lights) were issued from the ‘Velassi’ model. Significant work was done to improve the rider model accuracy. Front Fork is a new design.
 
+*October, 4, 2019 issue
+– Miscellaneous bug correction and improvement
 
-*October, 4, 2019 issue – First revision, miscellaneous bug correction and improvement
-*August, 10, 2019 First issue. This program was first issued as Trike-Geometry, producing only geometry blueprint. Program core written from scratch, but wheels and rider models were issued from the model I did to built the first version of my ‘Velassi’ recumbent, program which was never publicly released. 
+*August, 10, 2019 First issue.
+- BentSim was first issued as "Trike-Geometry", producing only geometry blueprint. Program core written from scratch, but wheels and rider models were issued from the model I did to built the first version of my "Velassi http://rouzeau.net/TheVelassi/TheVelassi" recumbent, program which was never publicly released. 

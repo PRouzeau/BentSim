@@ -1,9 +1,11 @@
 GÉOMETRIE ET MODELISATION d'UN VÉLO COUCHÉ
+En anglais, vous avez un manuel utilisateur complet ici: http://rouzeau.net/bentsimh.
+
 Cette application est prévue pour concevoir la géométrie d'un vélo couché 
 bicycle, tricycle ou quadricycle et en particulier son épure de direction.
 Elle génère simplément l'épure et ne fait pas de calcul (sauf celui de la
  chasse et du 'basculement de roue').
-La direction est conçue suivant l'épure d'Ackermann non corrigée.
+La direction est conçue suivant l'épure d'Ackermann avec la possibilité d'une correction.
 Cette application utilise OpenSCAD comme moteur de visualisation.
 Après avoir défini la géométrie, vous devez projeter le modèle pour pouvoir
 l'exporter au format DXF, utilisable dans tout logiciel de CAO/DAO.
@@ -45,7 +47,7 @@ Cette application nécessite d’avoir installé ‘Openscad’ (un modeleur 3D
 * http://www.openscad.org/downloads.html#snapshots
 Les versions de développement 'snapshot versions' sont a préférer car 
 elles sont révisées souvent et elles sont fiables.
-La version minimale officielle d'Openscad à utiliser est la 2019.05 .
+La version minimale officielle d'Openscad à utiliser est la 2021.01 .
 Vous devez installer tous les fichiers dans un répertoire sur votre
  ordinateur, bien que vous n'ayez pas vraiment besoin du répertoire
  'Images' pour faire fonctionner l'application.
@@ -145,7 +147,7 @@ et importer un ensemble de données individuelles avec des macros dans un documen
 Vous devez avoir Libre Office installé sur votre machine. Le document l'est :
 Dataset_macros_fr.odt'.
 
-Copyright 2019 Pierre ROUZEAU, pseudo "PRZ"
+Copyright 2019-2021 Pierre ROUZEAU, pseudo "PRZ"
 License du programme GPL V3
 License de la documentation cc BY-SA 4.0 et GFDL 1.2
 Cette application utilise la librairie OpenSCAD, jointe, mais si vous êtes

@@ -1,0 +1,819 @@
+All text before first page is comments and will not be displayed anywhere.
+see http://aquilegia.blue
+Copyright Pierre ROUZEAU 2016-2021 - documentation license: CC BY-SA 4.0
+
+■aqlgroups
+Groups for tabbed presentation
+*En
+*Fr
+
+■home
+BentSim Recumbent simulator
+(:notoc:)(:nonum:)
+BentSim is a free and open source application to design the geometry and make a 3D model of a recumbent bicycle, tricycle or quadricycle and in particular define accurately its steering system.
+It generates the blueprint and does not make any calculations (except for the trail and “wheel flop”). The steering blueprint can be exported in 2D ‘DXF’ format.
+All types of recumbent cycles are possible, except direct-drive cycles. You can create a Tadpole or Delta tricycle, a quadricycle or a SWB (short wheelbase) or LWB (long wheelbase) bicycle. Delta tricycle can be defined as 'tilting' with rear pulled articulated arms.
+The steering is designed according Ackermann principle, though the convergence point can be adjusted distant from the rear axis, which have proven to be required as tilting the steering pivots requires important adaptation to the Ackermann theory.
+
+640I%all_recumbents.jpg
+
+The 3D model aim to give a realistic impressions but does not go in fine details. You can design a single tube frame, define the transmission and complete steering system above or below the seat. You can install different handlebars type. You can choose between two different mesh seats and one rigid seat. Accessories as lights, flag and different types of wheels and mudguards are available. Standard bottom bracket mid-drive can be installed with a battery. Have a look at %examples%examples
+
+Once completed, the model can be exported as a simple volume (without colors) in stl format.
+
+It is also possible to project all or part of the model in 2D and export these 2D views in DXF format. Typically, we will make a projection of the frame.
+
+The size of the rider’s model can vary and for the same size, the proportion between the length of the legs and the length of the torso is adjustable.
+Two riders of different sizes can be displayed simultaneously on the model. Cyclist model have been carefully developed to have some realistic proportions and well located articulations, based upon some statistics and measures. However, this is not a completely accurate medical model and some hypothesis were done.
+
+After defining the geometry, you can project the recumbent model to be able to export it in DXF format, which can be used in any CAD software.
+
+This manual may one day or another be translated %in french%home_fr , but this is not yet done. 
+
+==Installation
+*%Install OpenScad%instoscad
+*%Install Protected Crossing%instbentsim
+
+==Utilisation
+*%Main principles%philo
+*%Using the application%usage
+*%Recording data%recdata
+*%BluePrint%blueprint
+*%Projections%projections
+*%Exporting%export
+*%Examples%examples
+
+420%wincustomizer.jpg
+==Parameters tabs
+*%Display%tabdisp
+*%Camera%tabcamera
+*%Description text%tabdesc
+*%Rider and seat%tabrider
+*%Dimensions%tabdim
+*%Bottom Bracket and cranks%tabbb
+*%Chain Transmission%tabtrans
+*%Steering knuckle or Fork%tabfork
+*%Tube frame%tabtframe
+*%Rear wheel support%tabrearfr
+*%Handlebar%tabhandlebar
+*%Fairing%tabfairing
+*%Cosmetic and accessories%tabacc
+*%Colors%tabcolors
+
+==Geometry design
+*%Notes to bike modelers%bikemodelers
+*%Notes to trike modelers%trikemodelers
+*%Ackermann compensation%ackermann
+*%Brake steer%brakesteer
+*%Tilting Trike%tilting
+
+==Miscellaneous
+*%Links%links
+*%Why this application?%why
+*%About%%
+*%Credits%%
+
+■home_fr, fr
+BentSim
+(:notoc:)(:nonum:)
+640L%all_recumbents_fr.jpg (:clear:)
+L'application gratuite et Open Source BentSim permet de concevoir des modèles 3D de vélos couchés bi, tri ou quadricycles
+Ce manuel n'étant pas encore traduit en Français, je vous renvoie à "ma page web https://rouzeau.net/OpenSCAD/BentSim" (en Français) ou vous trouverez quelques explications, cependant nettement moins détaillées que les explications en anglais de ce manuel.
+
+■menu, en
+help menu
+(:notoc:)(:nodef:)(:notitle:)(:nodate:)
+
+==Installation
+*%Install OpenScad%instoscad
+*%Install Bentsim%instbentsim
+
+==Utilisation
+*%Main principles%philo
+*%Using the application%usage
+*%Recording data%recdata
+*%Blueprint%blueprint
+*%Projections%projections
+*%Exporting%export
+*%Examples%examples
+
+==Parameters tabs
+*%Display%tabdisp
+*%Camera%tabcamera
+*%Description text%tabdesc
+*%Rider and seat%tabrider
+*%Dimensions%tabdim
+*%Bottom Bracket%tabbb
+*%Chain Transmission%tabtrans
+*%Steering knuckle/Fork%tabfork
+*%Tube frame%tabtframe
+*%Rear wheel support%tabrearfr
+*%Handlebar%tabhandlebar
+*%Fairing%tabfairing
+*%Cosmetic and accessories%tabacc
+*%Colors%tabcolors
+
+==Geometry design
+*%Bike modeling%bikemodelers
+*%Trike modeling%trikemodelers
+*%Ackermann compensation%ackermann
+*%Brake steer%brakesteer
+*%Tilting Trike%tilting
+
+==Miscellaneous
+*%Links%links
+*%Why this app?%why
+*%Release Notes%release
+*%Credits%%
+*%About%%
+
+■instoscad, en
+Installation and configuration of OpenSCAD
+OpenScad shall be "downloaded from the main site https://www.openscad.org/downloads.html#snapshots", you may use the development snapshots, which are more up do date but recently these snapshots which were usually very reliable have experienced some bugs. Select the version adapted to your operating system. On Windows, prefer the installer version '.exe' to the 'zip' version which requires some computer knowledge. Except if your computer is very, very old, you shall choose the 64 bits version.
+600L%load_openscad.jpg (:clear:)
+
+Customizer is now activated by default since OpenSCAD version 2019.05
+Then you shall install %the application%instbentsim
+
+■instbentsim, en
+Install the application
+BentSim uses OpenSCAD as its engine, which is a programmable 3D modeler.
+You must first %install OpenSCAD%instoscad on your machine and then install the BentSim application in a directory of your choice You can choose to install it in the 'my documents' directory but this is not compulsory. Note that the whole directory Path shall NOT contain any space or special character, this will prevent the application to work properly.
+
+BentSim is available here with a few comments:
+https://github.com/PRouzeau/BentSim
+If you want to go straight to the installation, the zip file containing application to install on your computer anywhere you want is here:
+https://github.com/PRouzeau/BentSim/archive/master.zip
+
+Once OpenSCAD have started you shall close the editor window
+520L%scr_close_editor.jpg (:clear:)
+Then open the customizer window (if not already done)
+600L%scr_open_customizer.jpg (:clear:)
+OpenScad will remember these modifications at next startup
+
+Start the application by clicking the file 'BentSim.scad' which will open automatically OpenSCAD ('.scad' file extensions are specific to OpenSCAD). 
+To have neat field screen, you shall specify that you want field description only. **This shall be done at each BentSim start**. 
+520L%scr_cust_description_only.jpg (:clear:)
+Then after having loaded the application, you shall start it either with the button or with [F5] key.
+
+Updating BentSim.
+To update BentSim, you just have to upload a new version and write over the existing one. Alternativaly, you can create a new directory with the new version. 
+BEWARE, writing a new version over the former one wil crush all your data and you shall save the single data file before doing anything, as described in the %recording data page%recdata which will explain also how to merge the existing data with new examples (which may not be needed).
+
+■philo, en
+Main principles
+You define a model just by setting parameters in the tabs located on the right of the window, in the 'customizer' panel. When the recalculation is set to be automatic (this is the default), any validated parameter (after typing 'enter' or moving to any other parameter) will restart calculation. Note that some models may need a few seconds to be calculated. The models with fairing (velomobile, cargomobile and streamliner) are significantly longer to calculate than others. There are specific instructions to help in the %fairing tab%tabfairing page.
+Note than when recalculating a model, only the modified parts are recalculated and the longer to calculate (apart fairing) is the rider.
+
+■usage, en
+Usage
+The basic process is to open the application (just clicking bentsim.scad in the app directory) then
+* Choose the 'description only' instead of 'show details' in the customizer top panel
+* Select an %example%examples in the customizer panel 
+* Create a new model (a dataset) with [+] button, then give a name to this model
+* Change any parameter you want
+* Don't forget to %save%recdata the dataset from time to time, if any crash, data will be lost
+* Choose the view of what you want to export (projected view, steering blueprint, stl volume) 
+* Render the object, that may be quite long for volumes.
+* %Export%export the rendered object
+
+380I%cmddescription.jpg
+
+380I%cmdselexample.jpg
+
+380I%cmdcreatedataset.jpg
+
+380I%cmdsavedataset.jpg
+
+■blueprint, en
+BluePrint
+To get information about the geometrical aspects of the cycle you are designing, you can visualize the blueprint, which gives you infos about the angles. 
+This is the first option in the %Display tab%tabdisp, [View type]
+420I%cmdblueprint.jpg (:clear:)
+
+800I%blueprint.jpg
+
+By default, pivot shaft and steering knuckle are shown thick to help understanding, though you can have a 'line only' view by deselecting [Display shaft]. This needs recalculation time. This is this line only view that you may prefer to export.
+600L%blueprint_no_shaft.jpg (:clear:)
+
+To export this blueprint in DXF file format (drawing exchange), you shall first render the blueprint, with [F6] key, which needs a few seconds calculation.  Exporting to a CAD software will allow you to set dimensions.
+
+■projections, en
+Projections
+To ease exportation to CAD programs, it is possible to make projections, which, after rendering, coud be exported as 2D drawings.
+This is useful to make plans of frame or fairing.
+380I%cmdsel_top_proj.jpg
+As calculating the projection on a whole model is extremely long, you shall remove the parts you don't want to see on the projection BEFORE selecting the projection. You shall not try to project spoked wheels, if you want the wheels to be part of the projection, select non spoked wheels before.
+
+420I%side_projection.jpg
+420I%top_projection.jpg
+420I%projection_top_fairing.jpg
+To export, you need to render the projection with [F6] first
+420I%top_projection_rendered.jpg
+
+If there is a fairing, it exist a specific projection which give a side projection and project all fairing frame flat and unfolded (you can 'fold' a frame, see the example below) and show on the side projection where are these frames. Here, there is no need to make any display selection prior to the projection, this is done automatically. On the below example, there is two frames when there is a step for the head support (see %fairing design%tabfairing)
+
+800I%projection_fairing.jpg
+
+■recdata, en
+Recording data
+== Creating and recording datasets
+All the parameters of a cycle can be recorded in a unique dataset. You can create or delete as many datasets as you will.
+There is absolutely no automatic recording so you shall imperatively push the button 'Save preset' to record any dataset. Once recorded, there is no way back, so it is wise to duplicate a dataset for all your trials (with the '+' button). If you don't want to use your modified data, just press the button 'Reset' or open any other dataset without validating the changes on the current dataset.
+
+ALL the data sets are recorded in a unique file named 'BentSim.json' each time you click on [Save preset]. After some data modifications, [Reset] may reset an existing dataset from its recorded value but we experienced some bugs on recent OpenSCAD isssues (beginning of 2021). Once saved, there is no possible reset.
+
+/:L 
+380%cmdcreatedataset.jpg
+Save the dataset   
+380%cmdsavedataset.jpg
+:/
+(:clear:)
+
+== BentSim update and file exchange with others
+BEWARE, when you update the Bentsim application (just  by copying the new version over the existing one), the BentSim.json file will be crushed by the new version (it contains all the examples), so you shall IMPERATIVELY save (or split, see below) this file before an update.
+In principle, I try to never modify data names and to define sound default values, so an old dataset may work on new revisions, but there may be some quirks. So to recover your work, you may retrieve the old 'BentSim.json', you will only lose the new examples (if any).
+
+== Macros for dataset management
+To help manage the datasets, I created a set of external macros for 'Libre Office Writer' to split and merge the datasets. It probably also works on 'Open Office' but I did not tested it. You need to have Libre Office suite installed, which is a quite large install (146 Mo). I am no longer using Microsoft Office since nearly a decade, so I was not able to create a visual basic macro. 
+To have access to these macro, you shall open the file 'dataset_macros.odt' and accept macros execution. Before that, Libre office may need to be configured to allow macros execution: [Tools]>[Options]>[Libre Offfice]>[Security]>[Macros security]>>[Security level] shall be set on 'medium' (as my macros can't be signed, I am not a company...). With 'Medium' set, the program will ask for macro execution every time you open a file containing macros, so this is reasonnably safe. For safety, only use the files I supplied on my GitHub account (PRouzeau), I have NO other distribution channel.
+
+520%macros_datasets.jpg
+
+These macros are splitting or merging the datasets in individual files. Each dataset file is '.json' compatible but I record them with the extension '.cusd'. (for CUstomizer Set Data)
+*[Separate users datasets] split the BentSim.json file in individual datasets for users datasets (those with an index>100) and send them sent in the subdirectory '/Data'.
+*[Separate all datasets] Do the same as above, including examples
+*[Direct merge of single dataset] append a unique dataset (that you shall chose by its number among all those in the '/Data' subdirectory) to the existing 'BentSim.json' file in project directory. Note this macro fails if there are too many files in the 'Data' directory which makes the list length exceeds the screen height. Remove or move unused files from '/Data' subdirectory to help.
+*[Direct merge of users datasets] Append all users datasets (those with an index >100) to 'BentSim.json', unsorted. 
+*[Merge all datasets] merge all datasets which are in the 'data' directory to the file 'BentSim.json' put in '/Data' subdirectory.
+*[Merge examples] merge all examples (index < 100) and create a file 'Examples.json' in '/Data' subdirectory.
+
+Note that with the two last merging macros project the resulting file is sent to '/Data' subdirectory. You need to copy the created file under the name 'BentSim.json' in the main project directory (don't forget to close 'BentSim.scad' before and to save the original '.json' file). 'BentSim.json' file will have no effect when left in the '/Data' subdirectory. This manual operation is imposed to help to avoid accidentally crushing your existing datasets. Don't forget that file names ARE case sensitive with OpenSCAD.
+
+■export, en
+Exporting data
+
+In the %Display tab%tabdisp you can choose %the projections%projections that you want to export to other software. The projection of the blueprint does not take into account the elements selected for display except for the display of shafts, which you will often prefer to disable for better readability.
+However, the other projections take into account everything that is displayed. As the calculation of these projections takes some time, only the most important elements (frame) may be selected. The calculation of the wheels in particular takes a little time.
+The simple preview that is made after any modification of the variable does not allow to export a file, it is first necessary to perform a “rendering calculation” by pressing [F6] or the dedicated button. It is highly recommended to %save the data%recdata with [Save Preset] before render calculation, which allows you to exit the program safely if the calculation lasts too long or if you have changed your mind. The data is NEVER automatically saved.
+Once the rendering calculation has been performed, it is possible to export a 2D file in the ’DXF’ format (AutoCAD export format) which is accepted by almost all CAD software.
+This is done with [File][Export][Export as DXF].
+480L%export_dxf.jpg (:clear:)
+It is also possible to export the 3D model (without the colors) in the ‘STL’ format after having previously rendered the 3D view. There is a theoretical possibility to export the 3D model to FREECAD with the file format ‘CSG’ but currently FREECAD has various problems with management of this format (but this could evolve). 
+
+■examples, en
+Examples
+There are many examples to show what can be done with BentSim.
+The examples are adapted to a medium-sized rider, except for the high racer where the 700 wheels are only accessible to people of sufficient height. The Mini trike is also represented with a children but may fit small legged people (me...).
+None of the examples correspond to a real recumbent even if they are inspired by existing ones (though in the dataset you can find the KMX trike which is not far from the real model, here to test macro dataset manipulation). 
+While you can define a cycle from the default configuration, there are many parameters and that will be long and tedious.
+So, it is highly recommended to start from an example resembling to your project. Just open the example and create a new dataset by simply clicking on [+] button. You shall then give a name. Note that the dataset name could be modified at any moment, so the name can be descriptive and could be simplified later.
+
+380I%cmdselexample.jpg
+
+/:L 
+:: All examples 
+170%example01.jpg::175C%example12.jpg :: 175C%example02.jpg :: 200%example03.jpg 
+135C%example06.jpg ::180%example07.jpg :: 180%example08.jpg :: 195C%example11.jpg 
+150C%example09.jpg::155C%example10.jpg::180%example05.jpg :: 190C%example04.jpg
+90L%example30.jpg ::170C%example20.jpg::170C%example21.jpg :: 200%example22.jpg 
+:/
+
+■tabdisp, en
+Selecting elements to display
+This tab allow to select what elements shall be displayed
+On the default model, only the blueprint lines and the wheels are displayed, though the data is complete for a default trike that you can display parts by parts.
+In addition to the mechanical elements and the rider, the blueprint lines can be displayed. The display of the control surfaces traces surfaces to validate the geometry (plane in the steering axis, volume occupied by the wheel when the handlebar is turned, maximum size tires and mudguards, cylinder showing the position of the V-brake joints). 
+
+480I%tabdisp.jpg
+
+■tabcamera, en
+Selection of camera position
+This tab allows you to force the display to a pre-recorded perspective or axis. Disable this option immediately after use, otherwise each preview will return to the same view. 
+
+520I%tabcamera.jpg
+
+■tabdesc, en
+Description text tab
+If you want to describe your model or explicit anything, this shall be written in the fields of this tab. This will be recorded along other cycle data in a given dataset. It is recommended to make a minimal description, even for a short test, because you will quickly loose track of the tests.
+You shall choose the model number arbitrarily, it is there to help sort the models, notably when exchanging files. 0 to 100 are reserved for the examples. Maximum is 255.
+
+420L%tabdesc.jpg (:clear:)
+
+■tabrider, en
+Rider(s) and seat(s) tab
+You can define two riders and %display%tabdisplay each one, both or none.
+Each rider is defined by its size and the proportion between its leg length and torso length.
+The proportion between leg length and torso length varies significantly from person to person and in general women have proportionately longer legs than men. The rider’s model hip joint has been modified to be upwards because a joint in the middle as too often modelled is completely unrealistic and led to errors in the sizing of recumbents. Knee joint is in the middle of the knees instead of being on the front so the bending angles are not very realistic. I started the design data with my own proportions so the generalization is to be taken with a little hindsight. The confidence you can place in this model is limited, further biomechanical studies should be carried out. The length of the inseam is displayed in the console window. 
+Overall feet, limb and head size are estimated from statistics base and not adjustable. Smaller sizes are base on children statistics, not very small people.
+The main parameters are torso and leg inclination. Both are rotating around a point located at the hip.
+Head can be bent.
+Yet arm length is fixed proportionateley to the leg size and cannot be modified.
+You shall define limb angles to have them reaching pedals and handlebar.
+
+You shall define relationship between both riders (if using two):
+*The second rider can be moved to the back (or front if negative) of a given value. This move is done according an angle you define, as seat sliders can be angled. This means that the seat height as defined is purely conventional and associated with the first rider because the second rider elevation will change while sliding seat. The seat and its accessories move with the rider.
+*You can define a value for the movement of the Bottom bracket. The angle of the movement is defined by the angle of the frame tube located in front of the bottom bracket (as defined in the %tube frame tab%tabtframe). This will create an adjustable boom if the bottom bracket is not offset from the tube. If the BB is offset from the tube, there is no boom and the BB slides on the frame tube, like you can find on many velomobiles.
+
+You can use both movement simultaneously as some recumbents propose both adjustments. 
+/:L 
+ 260%seat_moving_rear.jpg :: 300%boom_extent.jpg
+:/  
+(:clear:)
+
+Seat model is defined at the end of the tab, three are available: Rans Mesh seat, ICE mesh seat and a fictive hardshell seat. Seat are rotating with the torso on the same rotating point on the hip. 
+Light and flag are attached to the seat, they can be set up in the %Cosmetic and accessories%tabacc
+/:L 
+180%Seat_Rans_mesh.png::180%Seat_ICE_mesh.png::180%Seat_Hardshell.png::
+:/
+(:clear:)
+
+420L%tabrider.jpg (:clear:)
+
+■tabdim
+Dimensions tab
+You define in this tab the main geometrical dimensions which dictate the geometry of the cycle, mainly tracks, wheelbase and angles.
+480L%tabdim.jpg (:clear:)
+
+Tire width is used to calculate exact wheel diameter.
+
+Attention! The king pin axis angle is not the angle that you see when looking to the front of the trike/quad, but the angle you see when you look perpendicularly to a plane joining the two steering axis (this plane is tilted rearward according caster angle).
+The difference is not very large but this angle will be more practical to use for manufacturing.
+
+■tabbb, en
+Bottom Bracket and cranks
+Set the position of the Bottom Bracket, crank and pedal angles. Note that the bottom bracket is the reference point for the frame.
+480L%tabbb.jpg (:clear:)
+
+Mid-drive
+You can define a mid-drive motor among two (don't forget to validate motor view in %display tab%tabdisp)
+Set orientation angle of the motor and for Bikee drive, exact position and sensor idler angle.
+You shall choose a battery type among 4 models and set position and orientation of it.
+%Chainline%tabtrans shall be adapted to fit drive.
+Note: If interested by other drive type, you can simulate wheel drive them by setting a larger diameter hub in the wheel parameters in the %cosmetic tab%tabcosmetic
+
+/:L 
+ 160C%tsdz2_motor.jpg :: 160C%tsdz2_motor2.jpg :: 160C%bikee_motor.jpg
+ "Tongsheng TSDZ2 https://ebikechoices.com/tongsheng-tsdz2-review" :: _  :: "Bikee 'the lightest' https://lightest.bike" (available summer 2021)::
+:/
+(:clear:)
+/:L 
+180C%battery_frame_90.jpg :: 180C%battery_frame_111.jpg :: 180C%battery_rack.jpg :: 180C%battery_prismatic.jpg 
+ Frame battery, height 90 :: Frame battery, height 111 :: Rack battery :: Prismatic battery 
+:/
+(:clear:)
+You can notice that BentSim allow design of upright bikes, but this is anecdotal.
+
+■tabtrans, en
+Chain Transmission tab
+Here you position the Bottom Bracket and define the complete chain line.
+The chainline is a very critical part in any recumbent design and is a leading parameter in frame shape for clearance reasons.
+The chainline modelling doesn't go in much details, there is only one chainring diameter and one sprocket diameter, so you shall choose the diameters which are the one which creates the main constraints. You will have to tests multiple options. Note that clearance with chainstay is one very critical part and this became fairly complex when there is a rear suspension. The application doesn't allow side chain movement and so the chain representation is not accurate and is somewhat unsufficient to evaluate chainstay clearances.
+
+The chainline is defined in two parts.
+*The front part, which is projected from the Chainring and include idler(s)
+*The rear part, which is projected from the rear sprocket and dérailleur (if any).
+All chain segments angles and length shall be adjusted manually for rear and front part to join properly on the idler(s).
+You shall also define the idler pulleys, which can be merged or not and push chain downward or upward.
+Setting a dérailleur will modify the spokes of the wheel which became assymetric (wheels spoke are symetric for single sprocket).
+There is now the possibility to have an Indirect Front wheel drive (Indirect means that the bottom bracket doesn't rotate with the front fork).
+
+/:L 
+ 420%front_chain.jpg
+ 480%rear_chain.jpg
+ 320%front_drive_chain.jpg
+:/ 
+(:clear:)
+480L%tabtrans.jpg (:clear:)
+
+■tabfork
+Steering knuckle or fork parameters tab
+Fork (or knuckle for dual front wheel) are defined in this tab. Ackermann compensation is also set in this tab.
+480L%tabfork.jpg (:clear:)
+The length of the knuckle arm can be defined and its elevation. Note that as will probably done for easy manufacturing, the arm is projected perpendicularly from the pivot axis (with minor angle errors).
+You shall also define the ackermann correction. The details of it are defined in the Ackermann%ackermann page
+
+==Fork
+The perpendicular distance between the wheel axis and the bottom bearing face shall be set. For rigid forks, this is approximately half the external tire size + 55mm. For suspended fork, this will be much larger.
+The head tube length shall be set and also the bottom bearing height which define the space between the fork bearing seat and the bottom of the head tube.
+
+Three fork are available, a rigid one with bent dropout, a suspended one and an experimantal 'single-sided 'Lefty' with articulated arm, not completely parametrable yet.
+Note that forks can have a negative offset(rake) and will be so 'returned'.
+The fork offset andcaster angle is defined in the %Dimensions tab%tabdim
+/:L 
+180%fork_rigid.png::180%fork_suspended.png::180%fork_experimental_lefty.png::
+:/
+
+■tabtframe, en
+Tube frame description tab
+/:L 
+480%tube_frame.jpg
+350%square_trike_frame.jpg
+:/
+
+The [Tube frame] tab is used to define a single tube frame (circular or rectangular). A rectangular tube is selected by giving it a height (otherwise it is a round tube). The frame application principle defines four straight sections behind the bottom bracket (T1 to T4) and one section forward (T0).
+On a circular tube frame, the straight sections are joined by a bend whose radius is a parameter. The rectangular tubes are cut at the corner without elbows. The tab does NOT include rear wheel stays which are defined in the %rear wheel support tab%tabrearfr
+
+480L%tabtframe.jpg (:clear:)
+
+420%frame_side_ref.jpg
+The whole frame is positioned relatively to the Bottom Bracket (defined in [Transmission] tab), so moving bottom bracket move the frame. If bottom bracket is on a boom, you can define a second bottom bracket position in the [Rider] tab on the 2nd rider parameters.
+Tube segments and angles/bends are referenced as Tn and An.
+T0 and T1 tubes angle from horizontal is given by A0 angle.
+If there is no section at the front of the bottom bracket (T0=0), the section just behind the bottom bracket is considered to be an adjustable boom.
+Changing the length of a straight section to 0 removes it and the angle to 0 removes the bend. Often the last back section (A3 and T4) is non-existent.
+Angles could be positive or negative to bend in one direction or the other.
+There is the possibility of adding a reinforcement tube that starts from the second section behind the bottom bracket (T2).
+A reinforcement at the head tube is available as an option. 
+
+■tabrearfr, en
+Rear frame
+This tab allow definitions of the rear wheel(s) supporting frame.
+It can be either a rigid 'hardtail' frame or a suspended frame.
+For hardtail simply define the stays diameters, angles, length and end bends angles.
+Note that if you don’t have seat stays (say the wheel is supported only by strong chain stay), a length of 0 will remove the seat stays.
+Stays are projected from the wheel axis.
+Stays can be single sided, this is done when defining a stay side offset, however single rear wheel is always centered and you can't have offset rear wheel as for the historical Windcheetah trike (by Mike Burrows).
+
+%Display tab%tabdisp have an option "Display rear wheel up" to show both normal position rear frame and wheel and also upward position of the same.
+
+/:L 
+180%rear_wheel_support_hardtail.png::180%rear_wheel_support_single_arm.png::180%rear_wheel_support_suspended.png::180%rear_wheel_support_suspended_both.png::
+:/
+
+To define a suspended rear wheel, you simply have to define its horizontal distance from the front wheel axis. An horizontal distance equal to zero remove the rear suspension frame. 
+You shall also define a rear suspension travel. Note that it can be geometrically impossible to calculate the rear arm angle modification at full travel if the suspension axis is not properly positioned, this is signalled in the 'console' window.
+The rear suspension frame starts by a central tube articulated on the main frame. It will be angled as desired.
+The stays will be then independantly defined to reach the rear frame main tube.
+A shock is positioned along the rear frame central tube (approximately between 150 to 200mm from articulation axis) then rotated to an adequate position to be connected to the main frame.
+The rear frame articulation bracket and the main frame shock bracket shall be rotated to align with the main frame tubes and connect properly. Remember that on the main frame, you can have a reinforcement tube connected to the third segment which can be used to connect a shock.
+The shock displayed length is its unloaded length minus the sag. The sag is the compression of the shock due to bike and rider weight. Typically sag is 20% for a mountain bike but will be higher for an utility bike (say the shock is adjusted to be more ‘soft’). Typically for a 190mm air shock with a travel of 50mm, the sag for a mountain bike is 10mm. This means that the remaining operating travel is 40mm. Note that the shock approximate travel is displayed in the console window and you shall adjust your geometry and shock position to get the aimed value. For a 50mm travel shock with a sag of 13mm, the geometry and wheel travel shall be adjusted to have a shock travel of 37mm (this is the value of the examples, but note that the wheel travel are different in these two examples).
+
+You can view the position of the wheel in the maximum ‘up’ position (according defined vertical travel) in [Display] tab by selecting [Display rear wheel up]. Note that this will also be displayed when asking to display the checking surfaces. The difference is that when displaying the checking surfaces the tire (and fender) used are the maximum tire size as defined in the [Dimensions] tab, not the current one.
+
+It will be quite useful to have a look to the two recumbent examples with a rear suspension, notably because they are build quite differently (one with a traditional rear cage frame, the other with a single strong arm and strong chain stays)
+
+A tilting rear frame is simply a dual rear wheel "Delta" trike with suspension. The tilting is done by simply giving same suspension movement angle to rear right and left wheel, simply reversed. There is no sophisticated calculation for special linkage giving assymetrical arm movement angles (as can be done in the "Jetrike http://jetrike.com/geometry.html" of Henry Thomas). Trike just tilt on an axis located at ground level.
+
+480L%tabrframe.jpg (:clear:)
+
+■tabhandlebar, en
+Steering and handlebar
+In this tab you can define the handlebar style, its position, dimensions and those of the stem and steerer tube. Note that the caster angle is defined in the dimensions%tabdim tab. You also defines if this is a direct or indirect steering but there is no definition of steering linkage apart for the knuckle arm and single tie rod in dual wheel steering (defined in the %fork/knocle tab%tabfork).
+
+The handlebar can be positioned on the steering stem or under the seat. The angle of the steering pivot under the seat can be adjusted (it is desirable that the hands are in the plane of the steering pivot to be neutral when pulling or pushing the handlebar).
+There are four types of handlebars:
+
+*The tadpole trike “direct” handlebars connected to steerer tubes
+*The “Cruiser handlebar” which evolves from a practically flat handlebar to a long “chopper” handlebar according to the height given to it (minium height around 270 mm).
+*The “Hamster” handlebar, a small narrow vee handlebar with very close hands (hence its name). The height of the handlebar itself is not adjustable (but the stem and head tube can be adjusted)
+*The “U-bar” handlebar, originally designed to wrap the knees but which can also be positioned under the seat (by reorienting it). When adjusting its height, only the first segment is changed, the length of the segment carrying the handles remains constant. This 'U' handlebar can now be 'folded' in its center, the orientation and the angle of the fold being adjustable. This allow great flexibility in the shape.
+
+The width of these handlebars is not adjustable.
+
+/:L 
+180%trike_direct_steering.png::180%cruiser_handlebar.jpg::95C%cruiser_short_handlebar.png
+180%hamster_handlebar.png::125C%ubar_handlebar.png::180%underseat_handlebar.png
+:/
+
+480I%tabhandlebar.jpg
+
+■tabfairing, en
+Fairing tab
+It is possible to add a fairing built in segments, like aircraft aluminium fuselages. You define frames, recline or fold them and the frames are joined between the frames with straight lines, without smoothing at the frames. 
+The surfaces are developpables.
+However, the calculation time is not negligible and you shall organize. You shall first deactivate automatic preview. The longest calculation is for the nose, so remove nose display (set 0 as the first value of the array ‘fairing segment display’) when creating the fairing and add the nose at the end of the process.
+Frame parameters are explained below. The wheels cut are automatic.
+Fairing can be displayed as a shell and cut for control.
+Nose is the frame ‘0’ (first numbers in the arrays). You can have six  segments in addition to nose.
+There are three examples of faired cycle (Velomobile, Streamliner and Cargomobile) inspired from real cycles.
+
+380I%fairing_velomobile.jpg
+
+380I%fairing_frame_dimensions.jpg
+
+380I%fairing_half_cut.jpg
+
+480I%tabfairing.jpg
+
+After design, you may want to get the frames shapes, this will be done by a %projection%projections 
+450I%projection_fairing.jpg
+
+■tabacc, en
+Cosmetic and accessories tab
+Here you define Wheels details, fenders, flag and lights.
+The front light can be located on a fork (if any) or on the steerer above head tube or for a dual wheel on the boom.
+
+You can have a rear light, yet only attached to the top of the seat (or just below the saddle), no fender light yet.
+
+The wheels can have wired spokes, plain molded spokes (if spoke number is < 20) or being plain disc (spokes = 0).
+You can define front hub diameter. 
+Rear hub diameter can also be defined manually but if left to 0, diameter is set by the transmission type (80 for geared hub, 28 for others).
+The appropriate angle repartition of spokes is not automatic, you shall define the adjustment angle. If the adjustment angle = 0, then the spokes are radial. The driving wheel spoke symmetry is automatically defined by the transmission type (Dérailleur or single sprocket).
+/:L 
+180%wheel_wirespoked.png::180%wheel_casted.png::180%wheel_disc.png
+180%wheel_radial_spokes.png::180%wheel_with_fender.png::180%wheel_asym.png::
+:/
+
+/:L 
+160%front_light.jpg::220%seat_rear_light.png::180%flag_on_seat.png
+:/
+Flag is yet attached on the seat and its angle is maintained constant whatever the seat angle.
+Note that the image on the flag is a dxf file named 'flag_image.dxf' in the subdirectory 'Library'. The supplied image is my public draft signature (- PRZ - for Pierre ROUZEAU). You can change to your own file but you shall draft at an appropriate scale and position.
+
+480L%tabcosmetic.jpg (:clear:)
+
+■tabcolors, en
+Colors tab
+In this tab you can define bike colors for frame, fork, tires,  pedals, light, tires and the 'Aluminium' and 'Steel' colors used for miscellaneous mechanical parts.
+The colors for each rider are defined in a five element array: Torso, Arms, Legs, Shoes and Helmet. Beware to well respect the array syntax which if set wrong will crash the application.
+480L%tabcolors.jpg (:clear:)
+Color definition uses the standardised html "color names https://en.wikipedia.org/wiki/Web_colors"
+Color names are not case sensitive. 
+ONLY use quote marks around color name in the riders or fairing color array, NOT for other colors.
+
+The 'glass' color is used only for the fairing screens.
+Glass color is decomposed in RGBa - say Red, Green, Blue, alpha (alpha channel defines transparency), values of each channel varies from 0 to 1, e.g. [0.8, 0.5, 0.2, 0.6]
+
+■ackermann, en
+Ackermann compensation
+What is Ackermann compensation?
+When steering at significant rotation angle, if you want to avoid tire slippage and related side loads on wheels, you shall try to have the right and left wheel rotated differently because they are not turning on the same radius. The internal wheel ride on a track following a radius lower than the external wheel (the difference being quite approximately equal to the front track). In the 17th century, an agent of an inventor named Rudolph Ackermann (note that Ackermann is the agent and the inventor is Georg Lankensperger) filed a patent for a "simple system https://en.wikipedia.org/wiki/Ackermann_steering_geometry" to approximate the different right and left wheel angles required by the steering. By having the knuckle arm articulation set on an axis between the center of rear train and the steering pivot, the wheels differentiate their angle correctly at relatively low angle, but only if the pivot is vertical.
+ 
+Though in the real modern world, for miscellaneous reasons (stability and brake steering effect), the pivot is angled backwards and also angled on the side (to have the pivot axis crossing the ground on a line going through the middle of the tire).
+This make the Ackermann compensation as theorised quite off, so you shall modify the knuckle arm angles to adapt. Also, the compensation which can't be appropriate at all rotation angles shall be chosen to work properly at high steering rotation angles (> 15°) as for low angle, it is not of real importance.
+
+So you shall advance the Ackermann triangle tip forward the rear axis. Due to calculation complexity, the tie-rod linkage is not simulated and to check relative angle between right and left wheel, you have to set them manually (in the %display tab%tabdisp) in order to merge the discs at the end of the half tie-rods. At steering rotation high angle, there is some imprecision, so you shall export blueprint in dxf and check the tie-rod length on the dxf file (this length is reported in the console window). If you want to install bell crank linkage, you are on your own and shall do many tests with dxf exportation. To have faster calculation of the dxf file, set the wheels in 'wireframe' mode in the display tab. For Under seat steering, bell crank linkage is a good mechanical solution but its simulation is complex. The ackermann correction is done in the %Steering knuckle/fork tab%tabfork
+
+What about non-Ackermann or anti-Ackermann designs? These dispositions which tend to be abandoned were designed for race cars which are always on the slipping limit with intense loads and relatively low steering rotation angles. Ackermann is essentially needed for high steering rotation angle at low speed, so these theories are off-topic for a light trike or quad.
+
+/:L 
+480%ackermann_triangle.jpg
+480%ackermann_triangle_corrected.jpg
+:/
+
+■brakesteer, en
+Brake Steer
+Brake steer is a phenomenum which induce a turning force when braking on a double front wheel steering.
+This is linked to the front wheel geometry. When braking, a force directed to the rear is applied on the wheel at the point where it is in contact with the ground. If the pivot axis does not cross the ground in the alignment of the ground contact point, the wheel tend to turn around the pivot. As there is two wheels, the other wheel is subject to the same effect, so if an exact same braking force is applied on each side, there is no effect other than added stress in the steering linkage.
+However, if there is an assysmetry in braking, as will occur one day of another because wear of the brake pad or inequal braking force for mechanical brake, there will be a tendendy of the trike or quad to turn. If the wheel contact is outside the pivot axis, the steering direct on the side of the stronger brake else on the other side. This can be quite dangerous. This is why it is important to have an appropriately designed steering. It shall be noted that due to the pivot angle, the axis crossing point move sideway depending the tire diameter, so the steering is designed for a given tire size. If a tire diameter modification remains reasonnable, this is generally acceptable. But replacing a race tire by a 'balloon' tire, by example, may drive to some problems. With hydraulic brakes which tend to be well balanced, this effect may be unnoticeable till the pads wear out on one side before the other.
+
+schematic with pivot axis crossing ground in the wheel middle plane.
+120L%king_pin_angle.jpg
+
+■tilting, en
+Tilting delta trike
+You can define a delta tilting trike, jetrike style.
+Tilting delta trike is built with twin articulated arms, but the tilting swing mechanism is not represented, just the articulated arms.
+
+480%bentsim_tilting_trike.jpg
+
+When tilting the trike, the rear arm angles are equals but of opposite signs. There is no assymetric rear arm angle as can be done on a jetrike with a non flat 'swing arm'. Jetrike did that to lift the rear of the trike when it tilts in order to have added stability.
+
+To model a tilting trike you shall just define a 'normal' delta trike with a rear suspension 
+To define rear arm parameters, you shall open the %rear wheel support tab%
+Rear suspension defined by setting suspension axis position.
+To have wheels cantilevered (supported only on one side), you simply have to define the parameter 'rear arm side offset'. 
+420%option_rear_arm_side_offset.jpg (:clear:)
+It is recommended to define a front drive transmission, as rear wheel drive doesn't show anything usable.
+420%option_front_drive.jpg (:clear:)
+
+The tilting angle for the view is defined in %display tab%tabdisp
+There is a tilting trike in the examples.
+
+The jetrike geometry is described here:
+http://jetrike.com/geometry.html
+
+I built this simulation after doing a short test of the tilting trike version V2 of Daniele g. (who lives just a few kilometers from my home) that I found being a quite stable ride. On the Daniele trike, the rear arms movement are symetrical with a 'flat' 'swing arm', without the increased stability given by the Jetrike 'bent' swing arm.
+Its V2 version is detailed here:
+http://gonano.eu/my-first-solar-tilting-trike-several-important-upgrades
+He designed this trike to improve stability with roof solar panels as they rise significantly the center of gravity and makes a recumbent bike more difficult to handle (Daniele participated to the 2017 suntrip tour with a recumbent bike having roof panels).
+I did a small report (in french) of the test of his trike here (DeepL translator gives a pretty accurate translation in english if you prefer this language):
+http://velorizontal.1fr1.net/t23303p57-tilting-trike-une-nouvelle-approche
+
+■why, en
+Why BentSim application?
+This application was started after I observed on the French recumbent forum "Velorizontal http://velorizontal.1fr1.net/" that many DIY builders had difficulties with the steering geometry of trikes and were not well understanding how this does work.
+I was knowing the basic steering principles and making a simple program in OpenSCAD to draft all axis was looking relatively easy for me, as I have an extended practice of OpenSCAD and also have worked intensively on geometrical stuff when designing "my Delta 3D printers http://rouzeau.net/Print3D/DBox".
+It started initially with only the blueprint lines and axis, projected on each dimension, like you will do by hand. 
+After a while, as I already had programmed many components of a 3D model that I wrote for my own wooden recumbent "Velassi http://rouzeau.net/TheVelassi/TheVelassi" (the wheels, seat, handlebar and cyclist), I extended significantly the program to be able to design 3D models of bicycles, all types of trikes and quads. I also changed the program name to "BentSim" in the process.
+As most of the time when writing programs, all that proofed to be more difficult than was initially foreseen. In addition, looking closely the 3D view, I discovered later than on the first version I did some mistakes on the Ackermann geometry calculation. More recently, I also discovered that instead of what is told since more than one century, Ackermann geometry does not work well in the real world, where the steering axis is not at all vertical but tilted sideways and rearward (caster_angle).
+Also, not surprisingly, complexity of the program rised in the time, with many more parameters added to have a more and more accurate model.
+
+Creating the examples was really a lot of fun and also a very good learning course on how to design cycles, showing all the power of such tool. Writing stuff about a topic is as always one of the best way to learn and the main benefit of it.
+
+The %bike geometry%bikemodelers page benefit from my own experience designing, building and riding my LWB "Velassi http://rouzeau.net/TheVelassi" and the page about %trike design%trikemodelers is based upon the experience of others.
+
+One of the difficulty for users is that the 'engine' which run the application, the 3D parametric programmable modeler "OpenSCAD https://www.openscad.org/" is designed to be used by programmers and is not very user friendly to be installed for simple use of an application already developed. I don't have much possibilities to correct this point and my suggestions in the Opendscad Developers forum were not answered "with excessive enthusiam(...) https://github.com/openscad/openscad/issues/3135". The only thing I can do yet is give a detailed manuel of installation.
+
+■bikemodelers, en
+Notes to bike modelers
+Bike and especially recumbent bike handling is not always very well understood, sometimes even by professional designers. 
+It is a delicate and much discussed topic, so i'll try to write here some explanations from my own experience in design and a lot of reading of forums and documentation. 
+Recumbents bikes have more design freedom than upright bikes and could so be designed in a way which drive them to have an overall better handling, if you understand the required compromises.
+
+Just a preliminary note about caster, rake and head angle. They all speak of the same thing. Caster or rake angle is the steering angle from a vertical axis, while the 'head angle' is the steering angle from an horizontal axis. so 'head angle = 90-caster_angle'
+Use of one of this parameter is just linked to tradition, bicycle designers are using head angle while motorcycle designers are using  caster (rake) angle.
+What is the offset (or rake) of a fork? The wheel axis is not aligned with the steering axis but offset (by bending the dropout or inclining them). This offset is measured perpendicularly to the steering axis. It is used to adjust the trail in order to obtain a given value.
+
+The first parameter, known from most would be designers is the '''trail''', which is the distance between the tire ground contact area and the steering axis crossing point at ground level. The trail shall always be positive in order to have the wheel 'pulled' from its rotation axis. Think to castor wheel on a carriage. 
+The trail had a huge influence on the stability above some minimal speed. A high trail also prevent easy turning and manoeuverability.
+The trail is usually set from 40mm to 80 mm depending the bicycle purpose. It shall be noted that for motorcycles, the trail is generally larger, 80mm and above. Side loads with a high trail tend to induce turns. On a bicycle, the pedalling movement induce side loads and a bike with high trail may oscillate when pedalling. Short wheel base (SWB) bikes may be more sensitive to that phenomenum than other geometries.
+
+Another parameter, more rarely considered is the 'wheel flop' while it is of uttermost importance. What is that? Due to the head angle, when you turn your wheel, the head tube tend to lower its position. The nominal value of the wheel flop is defined for a right angle (90°) steering.
+This have the effect that under own weight, as soon as the steering have been rotated of a noticeable angle, the bike tend to self steer. This is very bad for low speed stability where you naturally tend to oscillate to angle values which drive your wheel to auto-steer. This is due to the caster (rake)/head angle but this increase with the trail. So, if a high trail is desirable for stability at high speed, it have the net result to decrease the low speed stability.
+So, why not having a more vertical head tube, which allow to have a sufficient trail (playing with fork offset) with lower wheel flop? 
+For a very simple reason: You can't grow longer arms on humans and the head angle/caster angle is dictated by the need to reach the handlebar without having your feet interfering with the front wheel (which can be VERY dangerous on an upright bike).
+On Recumbent, the situation is very different:
+On a short wheel base (SWB) bike, depending the seat angle, reaching handlebar is often easier than on an upright, so you can have a steeper head angle, and you often see relatively vertical forks with low or null offset (rake). Sometimes, it may even be possible to have a near vertical head tube and set a negative offset to maintain trail, so returning your fork. Such steering began to look closer to a castor wheel. This will help to have a better low speed stability.
+
+This is very much needed on recumbents because you are seated generally much lower than on an upright bike. This means that controlling by moving your body is less efficient than for an upright where your body have a much higher center of gravity. Also, a very reclined position creates more difficulties to use your body for handling. This is one of the reasons which impose that with a well reclined seat, you shall straighten up when starting or stopping. On a recumbent, it is more difficult to use 'body language' to handle the bike and so the stability rely more on geometry design.
+
+For recumbent with remote steering, you have freedom to define your head angle, so the most vertical possible is generally preferable. More vertical head angle means more stress on the frame which may end somewhat heavier but this may be a good compromise. Lower caster angle is also more stressful for the fork and suspended forks have more friction when installed more vertically. 
+
+It shall be noted that yet all version of BentSim were using the formula given in Wikipedia for the wheel flop. Though, as explained in a quite %documented paper%"https://kuromori.home.blog/what-is-wheel-flop/", the Wikipedia formula is plain wrong (I did made partial checks that this paper was indeed true). I will try on further issue of BentSim to see if I can find a better formula to qualify the 'wheel flop', because there is indeed a physical phenomenum which create low speed unstability for shallow head angle.
+
+For long wheel base (LWB) bikes with Over Seat Steering (OSS), the problem is more complex. Handlebar reach is difficult and so your steering head angle shall be more reclined ('shallow'). So, to maintain trail at a sufficiently low value, your fork offset(rake) shall be larger. If you look at LWB forks, they are always special with larger offset. Rans LWB forks, by example, have 82mm (3"1/4) or 89mm (3"1/2) offset, while 40 to 50 mm offset is more common for upright bike. For a DIY builder, these special forks add complexity.
+
+This reclined angle mean also that wheel flop tend to be larger on LWB and so low speed stability can be problematic. Though, two parameters come here to help. To have a reasonnable reach, the handles are much behind the steering axis, which makes your handlebar moving sideways when you turn. This is called the 'tiller effect' as this is like the tiller movement of a boat. Some may find that unpleasant but your arms tend naturally to center the handlebar and it helps (a bit) to compensate the instability related to wheel flop. Some designers consider that the aft position of the handles from the steering axis shall not exceed 250mm to limit the side excursion and discomfort.
+Also, as your steering head angle is reclined, the weight of your arms also help (a bit) to the stability.
+
+However, some LWB designers recommend for LWB to decrease very significantly the trail to just 10 to 20 mm, in order to also limit the associated wheel flop. This is a trade-off. Lower trail decrease high speed stability but lower wheel flop help for low speed stability. The large length of the LWB bike help high speed stability which may partly compensate the low trail. You will notice that because these bikes does have forks with very large offset (> 100 mm). You will find by example such design on the "recycled recumbents https://sites.google.com/site/recycledrecumbents/home" designed by A.D. Carson. He "recommend 112 mm of offset https://sites.google.com/site/recycledrecumbents/mach-2-drawings" on its Mach 2 LWB.
+
+Also, on LWB, seat are always relatively upright. LWB with OSS steering won't be manœuverable with a very reclined seat.
+LWB with 26" x 20" wheels are mostly used for leisure and touring so this is a compromise. Higher performance LWB use two larger wheels, either 26" x 26" or 700x700, adding gyroscopic stability allowing a more reclined seat.
+
+Another point which is of importance is the gyroscopic stability. On motorcycles, the motor rotation add a huge stability and you will never find a bike easier to handle at low speed than a trail motorbike. Another important gyroscopic effect is given by the wheels, but you need speed to get stability. The heavier and the larger wheels give higher gyroscopic stability. If you use light tires and wheels, you may prefer larger wheels to maintain the gyroscopic effect.
+
+With small wheels and light tires, you may prefer a more upright seat placed at a sufficient height to maintain good handling. This is the philosophy of the old design (but still in production) of the "Lightning P38 https://www.lightningbikes.com/p38/index.html".
+
+For a bike with a relatively low seat and small front wheel diameter for easy handling in all terrains (fast leg out may helps in all terrain rides), a low trail and low wheel flop with large tires will help stability. A larger diameter rear wheel will also help with a higher gyroscopic effect to compensate the low seated position. This is the compromise of the superbly swiss manufactured "Alpen Tourer https://www.wolfundwolf.ch/ch/liegerad/der-alpentourer/technik-details/". Note that the "lefty" fork have nearly no offset. 
+
+So, the handling of a bike may be quite complex to establish for recumbents and not all recumbents have been successful.
+It may also be difficult to have a high polyvalence on a recumbent. High performance, high comfort and easy handling may not be obtained from the same bike, this is never easy but can be more difficult to get for a recumbent than for an upright bike.
+
+As I hope you can now understand, riding a SWB 'low racer' with thin tires, light wheels, very reclined seat and very low center of gravity need experience and powerful motivation (speeeed !), that is not everyone bike...
+
+Tony Foale write long time ago a very important document "Experiment with steering geometry https://motochassis.com/articles/experiments-with-steering-geometry/" about the handling capability related to steering caster angle and trail. Tony is well known for his studies of motorcycle design and is a world reference on the topic.
+
+Other important work was done by professor William 'Bill' Patterson. A lot of universities around the world participates to speed record competition with faired recumbent. These bikes can be very difficult to handle. Being fragiles prototypes, you can't ride a lot of kilometers to establish brain handling automatisms. In addition when you are outputting the maximum possible muscle power, you brain became extremely diminished and reduce your ability to handle the bike. For these reasons, in order to ease the handling, Pr Patterson researched equations which allow to define geometries having comparable handling. He so created coefficients used for bike handling comparison. This work was used to build record bikes (built by the students of the university where he was working).
+His book 'the chronicles of the lords of the Chainring' where you can find his theory and some other information is available in Kindle format on Amazon. Unfortunately, the Kindle transcription created artifacts and the equations are unreadable, so you shall rely to other documents if you wish to read his theorical work (this need some base in mathematics).
+It shall be noted that Pr Patterson work do refer to a concept of 'wheel flop' with a different definition than the one you find on Wikipedia (as of early 2021). 
+He worked with a programmer to publish a calculation sheet suggesting trail for a given recumbent configuration. His theory indicates that for a low center of gravity, the trail shall be increased and the calculation results of this sheet gives unusually high trail. Unfortunately, the problem associated with wheel flop encountered with high trail were not discussed and that may drive to problems. 
+This "calculation sheet http://www.wisil.recumbents.com/wisil/trail.asp?calculate=yes" can be found on the web site "recumbents.com http://www.wisil.recumbents.com/home/"
+ 
+■trikemodelers, en
+Notes to trike modelers
+Trike steering is not always well understood and the theory may need adaptation. Tests are key on this topic, but for a DIY designer, it is not easy to make adjustable steering parts. Having multiple holes for adjustment may help further adaptation. Don't be ashamed of it, even seasoned professionals "are doing that https://www.pony4.bike/#&gid=2&pid=2" (though in the given example, the multiple holes may be needed because the quad can be assembled with different wheelbases).
+
+As I have no first hand experience of trike design, I will refer to others.
+
+Also, as a trike can't normally lean when turning, the side loads on a trike are much more intense than on a bike and using standard bike components for parts submitted to side or torsion load may drive to troubles and durability problems.
+Wheels are submitted to side loads due to centrifugal forces. This is one of the main reasons small wheels are generally used on the front for a 'tadpole' trike or on the rear for a 'delta' trike. They shall be built much stronger than bike wheels and to limit spoke stress they generally are built symetrically, steering shall be designed for it. You shall not compensate a steering design mistake by moving laterally the wheel rim and putting assymetry in spokes.
+
+When looking films of tadpoles turning at speed, you often see very large torsion of the rear frame and the rear wheel may tilt significantly. More than anything else, this helps to understand the importance of the side loads on non leaning cycles. Also, for the rear part of a Tadpole, it is very tempting to use a rear frame of a suspended montain bike. At first look, this seems a simple and ideal solution. However if a mountain bike frame is generally well built, it is not designed for intense side loads. The articulation notably is not designed for large torsion moments. A look at the size of the bearings of a rear suspended trike will be quite convincing that the design is not the same.
+
+Due to the side loads, the trail of a non leaning cycle shall be 	lower than the trail of a bike, the hellbent document listed below recommend a value around 40mm, but that could be lower for a 'sporty' trike.
+
+Documents about trike design
+* http://www.hellbentcycles.com/Trike%20Design%20101%20%20part-1.pdf
+* http://www.eland.org.uk/steering.html
+
+ 
+■release
+BentSim  Release notes
+Recumbent cycle simulator © 2019-2021 Pierre ROUZEAU Licence GPL V3
+Release notes 
+==March, 30, 2021
+- Creates this help manual - beware that OpenSCAD menus have evolved and screens copies are according new version. Minor improvements to the Aquilegia help engine.
+- Delta trike tilting system, Jetrike style, that I did following test of one
+- Single sided rear arm possible - not very detailed. 
+- Indirect front wheel drive possible. 
+- Trike steering Ackermann compensation is now adjustable (required for not vertical pivot axis - say all modern vehicles...)
+- Add possibility to MANUALLY adjust right/left steering to validate Ackermann.
+- Wheels can now be casted (3,4,5,6 or 8 spokes)
+- Added optional suspension fork (and an experimental articulated 'Lefty').
+- Added examples and updated all others. 
+- Grouped Knuckle/Fork data in a new tab. 
+- U-bar can now be bended in its center (for under seat use, as I tested on my Velassi).
+- Can add mid-drive motors -Tongsheng TSDZ2 and Bikee 'The lightest',supposedly available in summer 2021 -. Some examples incorporate them (with batteries)
+- Wheel spokes are now asymetric if there is a dérailleur transmission.
+- Stays bends angle are now adjustable. 
+- Can now have user programmed forks and frame. This needs to create an OpenSCAD program.
+- Color of rim, hub and spokes can be modified (unique for all)
+- Boom have now the same section profile as frame tube (so now can be rectangular)
+Fixes:
+- Rans seat viewing problem solved. 
+- Tire color now have effect
+
+==February, 26,  2020:
+– Add the ‘release notes’ file
+- Added two seats: ICE mesh seat and Hardshell seat (fictive) – Examples modified with these news seats
+- Added possibility to create a fairing in segment, like aircraft aluminium fuselages
+- Wheels can now have a fairing
+- Possible to show two crank arm and legs position, to estimate clearance within fairing
+- Frame: Trike cross angles definitions revised, one angle is deprecated
+- Frame: Bottom bracket on boom can be verticaly offset from the boom, like done on some velomobiles with a support bracket.
+- Rear transmission can now be simple speed/gearbox driven
+
+The fairing calculation time is significant. First calculation may take 1 minute on an old desktop. When developing a fairing, you may:
+- Cancel automatic preview (top left of customizer panel)
+- Cancel the display of the nose (setting 0 as first number in fairing display array), which is the longer part to calculate, and end the design with the nose.
+
+Driver (cyclist) revision:
+- Torso much more realistic, with back camber and shoulder blades
+- Neck articulation revised
+- Head proportions revised, with head size variable with overall size (with size ratio powered by 0.4: Headsize = headstandard*SizeRatio^0.4). This means a rider of 80% size of the standard will have a 91,5% head size from say ‘standard’
+- Limb and torso thickness proportions revised (with size ratio powered by 0.6:  Thickness = thicknessStandard*SizeRatio^0.6). This means that a rider of 80%  size from standard will have a 87.5% limbs and torso thickness of the ‘standard’.
+This gives much better proportion evolution with size, the smaller size looking more as children than dwarfs and larger size having better evolution either.
+- Foot size is proportional to leg length.
+- When changing size, the driver move slightly to/from seat to take into account limb thickness changes, so the real reference attach is the seat.
+
+Unfortunately the better torso shape add significant time calculation in the model, depending your computer power. Alone, a rider need 5 second calculation time on an old desktop. Complex models may need 10 to 15 seconds to be calculated first.
+
+Examples:
+Added three faired examples:
+- 1 Velomobile trike
+- 1 Streamliner (bicycle)
+- 1 faired trike with front box, ‘Cargomobile’ (named coined by ‘Diagonale’ on the french forum Velorizontal).
+
+- Removed ‘Pocket’ trike, replaced by ‘mini trike’ foreseen for children and very small people.
+
+==November, 14, 2019 issue 
+- Add rear suspension, miscellaneous bug corrections
+!November, 10, 2019 issue
+- The program was extended and renamed as ‘BentSim’, adding more complete modelisation and the capability to design a monotube Frame. It was correcting a mistake in the geometry. First seat is Rans Mesh seat. New model elements (Seat, handlebars, Lights) were issued from the ‘Velassi’ model. Significant work was done to improve the rider model accuracy. Front Fork is a new design.
+==October, 4, 2019 issue
+– First revision, miscellaneous bug correction and improvement
+==August, 10, 2019 First issue.
+- BentSim was first issued as "Trike-Geometry", producing only geometry blueprint. Program core written from scratch, but wheels and rider models were issued from the model I did to built the first version of my "Velassi http://rouzeau.net/TheVelassi/TheVelassi" recumbent, program which was never publicly released. 
+
+■hlphead
+Default page -added at top of page ATOP page title - 
+(:nodef:)
+
+■hlpdef
+Default page -added at top of page below page title - 
+(:numtitle:)(:hlpfoot:) 60R%%mylogo.jpg /*here we have a header, footer, number all table of content and add a logo */
+
+■hlpfoot
+Foot page add text at the bottom of the page, outside the title sections, inside page css class. 
+(:date 12 Feb 2021 18:15:)(:nodef:)(:notoc:)(:nodate:)(:notitle:)
+&nbsp;<small>&copy;2021 Pierre ROUZEAU, see %Credits%%. Licence CC BY-SA 4.0</small>  %Privacy%% <small>Cookie store last page ref.  Sent by "Aquilegia http://aquilegia.blue"</small>
+
+■credits
+Credits
+BentSim was developed from scratch with very few input from program others than those already written by the author.
+*A lot of parts of this application are issued from the program done for modelling my wooden recumbent "Velassi http://rouzeau.net/TheVelassi/TheVelassi" which was never published.
+*The cyclist model part is derived from a program done for Python bike modelling, though it was hugely modified and there shall be very few remnants from the original code. The history of this program is amusing and detailed in the source code "Velo_rider.scad https://github.com/PRouzeau/BentSim/blob/master/Library/Velo_rider.scad".
+*The logo is issued from my OpenSCAD application "Bike symbols https://github.com/PRouzeau/Bike-Symbols"
+*The help web page is built and displayed by my application "Aquilegia http://aquilegia.blue"
+
+■privacy
+Privacy policy
+(:date 28 March 2021:)The only information I retain from your visit will be the usual statistics kept by the web server provider tools:
+Your IP, the web address used to enter the site (with the page if defined), the time you stay and your browser and OS characteristics (if they are not kept secret).
+There is no commercial activity linked to this site and I do not search to identify or track you. The served content is entirely operated by myself and there is no publicity. There is NO added content by my provider.
+
+This presentation runs '''entirely''' in your browser and did not return '''any''' information to the server. There is one cookie created by your browser containing the last page viewed (so reopening Aquilegia direct you to the last viewed page), which will be deleted at the end of the session (i.e. when you close your browser). The cookie on your machine is read by the webpage itself on a new opening but not transferred to the server.
+
+In addition, the whole presentation is technically a unique web page loaded once and the content is modified by your browser when navigating  according a javascript program. Images, however, are loaded on demand -- If you are technically interested, you can have a look at "aquilegia site http://aquilegia.blue" to understand the storage philosophy and overall concept of no server side programmation --. So, the logs did not yet give me direct information about visited pages, though it could be detectable with image loading log or url rewriting. As page views statistics is a useful information, I may try to do something about it one day if this is workable, but there is nothing yet. As this help system is pure javascript, you have direct access to 100% of the code (with [F12] key on most browsers).
+
+There is NO traffic survey by an external site (like done typically by Google analytics in the majority of web sites...), so you can't be tracked by google or any other external company using similar tool.
+
+The encrypting 'https' certificate is provided by "Let's encrypt https://letsencrypt.org/"
+My shared space server provider is "O2Switch https://www.o2switch.fr/" since august 2020 (was OVH before).
+
+As all my Internet operations, this is un-commissioned work that I develop as a hobby. 
+In 17 years of Internet activity, I never displayed any publicity nor trade any link, or be proposed a product for review and so, never get any money or advantage, just had expenses... and worked for many thousands hours.
+  Pierre Rouzeau  http://rouzeau.net
+
+■about, en
+About
+(:date 29 March 2021:)*BentSim is (c) Pierre ROUZEAU  2019-2021
+Application can be found at https://github.com/PRouzeau/BentSim
+It requires the installation of "OpenScad https://www.openscad.org/downloads.html", see documentation
+This manual is located at: http://rouzeau.net/bentsimh  (characters shall be all lowercase)
+Licence of the Program: GPL v3
+Licence of the documentation: CC BY-SA 4.0 and GFDL 1.2
+All output generated by the application is free of right and you can define your own license for each project.
+
+The documentation system is run by "Aquilegia http://aquilegia.blue", also of own design, a pure Javascript application without any use of server language - so run entirely on YOUR machine, not on the server which simply supply flat files without any treatment.
+
+My "own site http://rouzeau.net" with varied topics in french and english, mostly technical but with some stuff about natural resources depletion and some political rants.
+"Web page about BentSim http://rouzeau.net/OpenSCADEn/BentSim" is less detailed than this help manual
+"Web pages about cycling as transport http://rouzeau.net/VeloDeVille" exist only in french - that is about biking as a transport.
+"Web pages about my wooden recumbent 'Velassi' http://rouzeau.net/TheVelassi/TheVelassi" which started all this.
+My other published programs can be found "on Github https://github.com/PRouzeau", but the cycling content is only a part of my production (others stuff being 3D printing and this help system).
+
+■hlpdiag
+Writer tool box
+(:date 12 Sep 2016 19:19:)
+Reload page after getting the diagnostic.
+
+0|List all pages (after loading external pages)|
+
+1|List all web links (after loading external pages)|
+Links open in new window, so you can test one after the other while closing test window with [Ctrl]W.
+
+2|Check linked images (after loading external pages)| 

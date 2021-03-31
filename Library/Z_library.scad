@@ -1,6 +1,7 @@
 //OpenSCAD library modules - written from scratch - 
-// (c) Pierre ROUZEAU(aka PRZ)2015-2017 Licence:  LGPL V3 
+// (c) Pierre ROUZEAU(aka PRZ)2015-2021 Licence:  LGPL V3 
 // Rev. 7 may 2017 : corrected ldupln function, which was making wrong count, so wrong tenons/slots
+// Rev 2021: Add profiles, misc. modifications, add 'dark' color.			 
 /*OpenSCAD primitives gives a priority to z axis, which needs a lot of subsequent rotations. So, you quickly find yourself lost between your axis, which have been swapped by the rotations. That drive for complex objects to build them on a X/Y plane, then to rotate the ensemble. It is tedious and unpractical.
   Also, OpenSCAD is using a lot of brackets, which are hard to get on some non-QWERTY keyboards.
   This library is aimed to ease openSCAD programming and improve readability. Also, primitive names are short. This is not the todays trend, but I find it useful, whithout real penalty. 
@@ -41,6 +42,11 @@ solidxy = [1,1,0];
 solidxz = [1,0,1];
 solidyz = [0,1,1];
 
+//== Legacy ================================
+//When a duplicate mirror is neutralised, simple mirror (if set to false, do nothing)
+//It is recommended to have the below variable false, but the legacy behaviour was always mirroring
+dmirr_s = false;
+
 //== PART I  : PRIMITIVES ==================
 // cylinder, first parameter is diameter, then extrusion length
 // Negative Diameter CENTER extrusion, Negative extrusions are Ok
@@ -50,10 +56,12 @@ module cylx (diam,length,x=0,y=0,z=0,div=$fn, fh=1) {//Cylinder on X axis
   if (fh==false) 
     echo ("cyly : change holeplay parameter to numeric");
   mv=(length<0)?length:0;					// not ok if diam AND length are negative. who cares ? 
-  center=(diam<0)?true:false;	
-  translate([x+mv,y,z])
-    rotate([0,90,0])
-      cylinder (d=(abs(diam)+fh*holeplay), h=abs(length), $fn=div, center=center);
+  center=(diam<0)?true:false;
+  if(length && diam) //avoid warning when h==0
+	translate([x+mv,y,z])
+			rotate([0,90,0])
+				cylinder (d=(abs(diam)+fh*holeplay), h=abs(length), $fn=div, center=center);
+	//next to allow sequential operations
 	translate([x+(diam<0?0:length),y,z])
 		children();
 }
@@ -63,10 +71,12 @@ module cyly (diam,length,x=0,y=0,z=0,div=$fn, fh=1) {//Cylinder on Y axis
   if (fh==false) 
     echo ("cyly : change holeplay parameter to numeric");
   mv=(length<0)?length:0; // accept negative height		
-  center=(diam<0)?true:false;	
-  translate([x,y+mv,z]) 
-    rotate([-90,0,0])
-      cylinder (d=(abs(diam)+fh*holeplay), h=abs(length), $fn=div, center=center);
+  center=(diam<0)?true:false;
+	if(length && diam)
+		translate([x,y+mv,z]) 
+			rotate([-90,0,0])
+				cylinder (d=(abs(diam)+fh*holeplay),h=abs(length), $fn=div, center=center);
+	//next to allow sequential operations
 	translate([x,y+(diam<0?0:length),z])
 		children();
 }
@@ -76,26 +86,26 @@ module cylz (diam,height,x=0,y=0,z=0,div=$fn, fh=1) { // Cylinder  on Z axis
   if (fh==false) 
     echo ("cyly : change holeplay parameter to numeric");
   mv=(height<0)?height:0; 	// accept negative height	
-  center=(diam<0)?true:false;	
-  translate([x,y,mv+z]) 
-    cylinder (d=(abs(diam)+fh*holeplay), h=abs(height), $fn=div, center=center);
+  center=(diam<0)?true:false;
+	if(height && diam)
+		translate([x,y,mv+z]) 
+			cylinder (d=(abs(diam)+fh*holeplay), h=abs(height), $fn=div, center=center);
+	//next to allow sequential operations
 	translate([x,y,z+(diam<0?0:height)])
 		children();
 }
 
 module mcube (sx,sy,sz,center=false,x=0,y=0,z=0, solid=[-1,-1,-1]) { // accept negative coordinates but only if center==false else result is wrong
-	// take into account holeplay according to solid vector (default is a hole)
-	cfc=(center)?0:1; // no play movement if centered
-	mx=(sx<0)?cfc*(sx+solid[0]*holeplay/2):solid[0]*cfc*holeplay/2; 
-	my=(sy<0)?cfc*(sy+solid[1]*holeplay/2):solid[1]*cfc*holeplay/2;
-	mz=(sz<0)?cfc*(sz+solid[2]*holeplay/2):+solid[2]*cfc*holeplay/2;
-	dx = abs(sx)-solid[0]*holeplay;
-	dy = abs(sy)-solid[1]*holeplay;
-	dz = abs(sz)-solid[2]*holeplay; 
-	tsl(x+mx,y+my,z+mz) {
-		cube ([dx,dy,dz], center=center);
-		children();
-	}
+  // take into account holeplay according to solid vector (default is a hole)
+  cfc=(center)?0:1; // no play movement if centered
+  mx=(sx<0)?cfc*(sx+solid[0]*holeplay/2):solid[0]*cfc*holeplay/2; 
+  my=(sy<0)?cfc*(sy+solid[1]*holeplay/2):solid[1]*cfc*holeplay/2;
+  mz=(sz<0)?cfc*(sz+solid[2]*holeplay/2):+solid[2]*cfc*holeplay/2;
+  dx = abs(sx)-solid[0]*holeplay;
+  dy = abs(sy)-solid[1]*holeplay;
+  dz = abs(sz)-solid[2]*holeplay; 
+  tsl(x+mx,y+my,z+mz)
+    cube ([dx,dy,dz], center=center);
 } //*/
 
 //holeplay=2;
@@ -106,10 +116,8 @@ module cuben (sx,sy,sz,x=0,y=0,z=0, center=false) { // same as mcube, but with c
   mx=(sx<0)?cfc*sx:0; 
   my=(sy<0)?cfc*sy:0;
   mz=(sz<0)?cfc*sz:0;
-  tsl(x+mx,y+my,z+mz) {
+  tsl(x+mx,y+my,z+mz)
     cube ([abs(sx),abs(sy),abs(sz)], center=center);
-		children();
-	}
 }
 
 module cubex (xd,yd,zd,x=0,y=0,z=0, fh=0) { // centered on y anz z, not centered on x, negative extrusion possible
@@ -120,33 +128,26 @@ module cubex (xd,yd,zd,x=0,y=0,z=0, fh=0) { // centered on y anz z, not centered
   mx=(xd<0)?xd:0;
   tsl(mx+x,y-yd/2-fh*holeplay/2,z-zd/2-fh*holeplay/2)
     cube ([abs(xd),abs(yd)+fh*holeplay,abs(zd)+fh*holeplay]);
-	translate([x+xd,y,z])
-		children();
 }
 
 module cubey (xd,yd,zd,x=0,y=0,z=0, fh=0) { // centered on x anz z, not centered on y
   // fh is a coefficient for holeplay - default 0 for cubes
   if (fh==true) 
-    echo ("cubey: change holeplay parameter to numeric");  
+    echo ("cubey : change holeplay parameter to numeric");  
   cfh = (yd<0)?-1:1;
   my=(yd<0)?yd:0;
   tsl(x-xd/2-fh*holeplay/2,my+y,z-zd/2-fh*holeplay/2)
     cube ([abs(xd)+fh*holeplay,abs(yd),abs(zd)+fh*holeplay]);
-	translate([x,y+yd,z])
-		children();
 }
 
-module cubez (xd,yd,zd,x=0,y=0,z=0, fh=0) {
-	// centered on x anz y, not centered on z
-	// fh is a coefficient for holeplay  - default 0 for cubes
-	if (fh==true) 
-		echo ("cubez : change holeplay parameter to numeric");
-	cfh = (zd<0)?-1:1; // what is done with that ??? 
-	mz=(zd<0)?zd:0;
-	tsl(x-xd/2-fh*holeplay/2,y-yd/2-fh*holeplay/2,mz+z)
-		cube([abs(xd)+fh*holeplay,abs(yd)+fh*holeplay,abs(zd)]);
-	translate([x,y,z+zd])
-		children();
+module cubez (xd,yd,zd,x=0,y=0,z=0, fh=0) { // centered on x anz y, not centered on z
+  // fh is a coefficient for holeplay  - default 0 for cubes
+  if (fh==true) 
+    echo ("cubez : change holeplay parameter to numeric");
+  cfh = (zd<0)?-1:1; // what is done with that ??? 
+  mz=(zd<0)?zd:0;
+  tsl(x-xd/2-fh*holeplay/2,y-yd/2-fh*holeplay/2,mz+z)
+    cube ([abs(xd)+fh*holeplay,abs(yd)+fh*holeplay,abs(zd)]);
 }
 
 /*extrusion of rounded rectangular profile (centered), first param radius. p1 & p2 = rectangular side size (not half as above)
@@ -155,22 +156,18 @@ module cubez (xd,yd,zd,x=0,y=0,z=0, fh=0) {
 //usage: rcubex (5,12,40,60,20)  */
 
 module rcubex (radius,length,x=0,y,z) {
-	hull() 
-		quadx(x,y/2-abs(radius),z/2-abs(radius)) 
-			cylx(2*radius,length);
-	t(x+length)
-		children();
+  hull() 
+    quadx (x,y/2-abs(radius),z/2-abs(radius)) 
+      cylx(2*radius,length);
 }
 
 module hrcubex (radius,length,x=0,y,z) { // 'special' - rounded below, flat on top
-	hull() {
-		tsl(x) 
-			cubex (length,y,z/2,0,0,z/4);
-		dmirrory() 
-			cylx(2*radius,length,x,y/2-abs(radius),-z/2+abs(radius),32);
-	}
-	t(x+length)
-		children();
+  hull() {
+    tsl(x) 
+      cubex (length,y,z/2,0,0,z/4);
+    dmirrory() 
+      cylx(2*radius,length,x,y/2-abs(radius),-z/2+abs(radius),32);
+  }  
 }
 
 //hrcubex (7, 5, 40, 40,30);
@@ -180,54 +177,44 @@ module rcubey (radius,length,x,y=0,z) {
   hull() 
     quady (x/2-abs(radius),y,z/2-abs(radius)) 
       cyly(2*radius,length);
-	t(x,y+length,z)
-		children();
 }
 
 module rcubez (radius,length,x,y,z=0) {
-	hull() 
-		quadz (x/2-abs(radius),y/2-abs(radius), z) 
-			cylz(2*radius,length);
-	t(x,y,z+length)
-		children();
+  hull() 
+    quadz (x/2-abs(radius),y/2-abs(radius), z) 
+      cylz(2*radius,length);
 }
 
 //tubex (20,2,-100, 50,60,80);
 
 module tubex (diam, thickness, length, x=0,y=0,z=0, div=$fn, fh=1) {
-	dt = (length<0)?-1:1;
-	dtx = (diam<0)?0:dt;
-	cf = (diam<0)?-1:1;
-	difference() {
-		cylx(cf*abs(diam), length, x,y,z, div, 0);// neutralise the holeplay 
-		cylx(cf*(abs(diam)-2*thickness), length+dt+dt, x-dtx,y,z, div, fh);
-	}
-	t(x+length,y,z)
-		children();
+  dt = (length<0)?-1:1;
+  dtx = (diam<0)?0:dt;
+  cf = (diam<0)?-1:1;
+  difference() {
+     cylx(cf*abs(diam), length, x,y,z, div, 0); // neutralise the holeplay 
+     cylx(cf*(abs(diam)-2*thickness), length+dt+dt, x-dtx,y,z, div, fh);
+   }  
 }
 
 module tubey (diam, thickness, length, x=0,y=0,z=0,div=$fn, fh=1) {
-	dt = (length<0)?-1:1;
-	dty = (diam<0)?0:dt;
-	cf = (diam<0)?-1:1;
-	difference() {
-		cyly(cf*abs(diam), length, x,y,z,div, 0);
-		cyly(cf*(abs(diam)-2*thickness), length+dt+dt, x,y-dty,z,div, fh);
-	}
-	t(x,y+length,z)
-		children();
+  dt = (length<0)?-1:1;
+  dty = (diam<0)?0:dt;
+  cf = (diam<0)?-1:1;
+  difference() {
+     cyly(cf*abs(diam), length, x,y,z,div, 0);
+     cyly(cf*(abs(diam)-2*thickness), length+dt+dt, x,y-dty,z,div, fh);
+   }  
 }
 
 module tubez (diam, thickness, length, x=0,y=0,z=0, div=$fn, fh=1) {
-	dt = (length<0)?-1:1;
-	dtz = (diam<0)?0:dt;
-	cf = (diam<0)?-1:1;
-	difference() {
-		cylz(cf*abs(diam), length, x,y,z, div,0);
-		cylz(cf*(abs(diam)-2*thickness), length+dt+dt, x,y,z-dtz, div, fh);
-	}
-	t(x,y,z+length)
-		children();
+  dt = (length<0)?-1:1;
+  dtz = (diam<0)?0:dt;
+  cf = (diam<0)?-1:1;
+  difference() {
+     cylz(cf*abs(diam), length, x,y,z, div,0);
+     cylz(cf*(abs(diam)-2*thickness), length+dt+dt, x,y,z-dtz, div, fh);
+   }  
 }
 
 //eqtrianglez (-100, 15);  cylz (100, 5);
@@ -250,14 +237,14 @@ module eqtrianglez (dim, length, x=0,y=0,z=0) { // dim positive is base, dim neg
 //As for line primitive, the use of a negative interval will adjust (round) the intervals to fit the allowed space, however in this primitive as the tenon length is known, there will be no part overpassing the length. 
 
 module tenonxy (slotlength, interval, totlength, thkplate, height) { //creates tenons of length slotlength on totlength (does not go over length) - raise in 'z' axis
-	sll=abs(slotlength);
-	// echo (holeplay=holeplay);
-	cfl=(totlength<0)?-1:1;
-	mvh= (height<0)?height:-0.2;
-	mvl= (totlength<0)?-sll+holeplay/2:holeplay/2;
-	lduplx(interval, cfl*(abs(totlength)-sll)) 
-		tsl(mvl,0,mvh) //-0.2 to avoid merging surface-no play as //cuts will equal height
-			cube([sll-holeplay, thkplate, abs(height)+0.2]);
+  sll=abs(slotlength);
+  // echo (holeplay=holeplay);
+  cfl=(totlength<0)?-1:1;
+  mvh= (height<0)?height:-0.2;
+  mvl= (totlength<0)?-sll+holeplay/2:holeplay/2;
+  lduplx (interval, cfl*(abs(totlength)-sll)) 
+    tsl(mvl,0,mvh) //-0.2 to avoid merging surface-no play as //cuts will equal height
+      cube([sll-holeplay, thkplate, abs(height)+0.2]);
 }
 
 module tenonbitxy (slotlength, interval, totlength, thkplate, height) { //cut the bit room aside tenons - parameters shall be identical to tenonxy, and this function shall be set in substraction block
@@ -322,29 +309,29 @@ module slotzx (slotlength, interval, totlength, thkplate,z=0,x=0) {
 }
 
 module conex (diam1, diam2, ht, x=0,y=0,z=0,div=$fn, fh=1) {
-	mv = (ht<0)?ht:0;
-	di1 = (ht<0)?diam2:diam1;
-	di2 = (ht<0)?diam1:diam2;
-	translate([x+mv,y,z])
-	rotate([0,90,0])
-		cylinder (d1=di1+fh*holeplay, d2=di2+fh*holeplay, h=abs(ht), $fn=div);  
+  mv = (ht<0)?ht:0;
+  di1 = (ht<0)?diam2:diam1;
+  di2 = (ht<0)?diam1:diam2;
+  translate([x+mv,y,z])
+  rotate([0,90,0])
+    cylinder (d1=di1+fh*holeplay, d2=di2+fh*holeplay, h=abs(ht), $fn=div);  
 }
 
 module coney (diam1, diam2, ht, x=0,y=0,z=0,div=$fn, fh=1) {
-	mv = (ht<0)?ht:0;
-	di1 = (ht<0)?diam2:diam1;
-	di2 = (ht<0)?diam1:diam2;
-	translate([x,y+mv,z])
-	rotate([-90,0])
-		cylinder (d1=di1+fh*holeplay, d2=di2+fh*holeplay, h=abs(ht),$fn=div);  
+  mv = (ht<0)?ht:0;
+  di1 = (ht<0)?diam2:diam1;
+  di2 = (ht<0)?diam1:diam2;
+  translate([x,y+mv,z])
+  rotate([-90,0])
+    cylinder (d1=di1+fh*holeplay, d2=di2+fh*holeplay, h=abs(ht),$fn=div);  
 }
 
 module conez (diam1, diam2, ht,  x=0,y=0,z=0,div=$fn, fh=1) {
-	mz  = (ht<0)?ht:0;
-	di1 = (ht<0)?diam2:diam1;
-	di2 = (ht<0)?diam1:diam2;
-	translate ([x,y,z+mz])
-		cylinder (d1=di1+fh*holeplay, d2=di2+fh*holeplay, h=abs(ht),$fn=div);
+  mz  = (ht<0)?ht:0;
+  di1 = (ht<0)?diam2:diam1;
+  di2 = (ht<0)?diam1:diam2;
+  translate ([x,y,z+mz])
+    cylinder (d1=di1+fh*holeplay, d2=di2+fh*holeplay, h=abs(ht),$fn=div);  
 } 
 
 //coney (10, 5, 3);
@@ -493,8 +480,7 @@ tsl(25,35) {
   } 
 } //*/
 
-//== PART II : DEVELOPPED PRIMITIVES ===================================================
-
+//== PART II : DEVELOPPED PRIMITIVES =================
 // Rather basic bolt routines // head size is realistic only in metric
 // Bolts type are "HEX", "SH" (socket head), "DOME" and "FLAT" - all uppercase-
 // dome shown is medium size, default "HEX"
@@ -555,7 +541,7 @@ module boltz (d,l,x=0,y=0,z=0,type="HEX", washer) {
       boltx(d,l,0,0,0,type, washer); 
 }
 
-//--- Text display --------------------------------------------------------------
+//--- Text display ----------------------------
 
 module textz (txt,size,h,bold,x=0,y=0,z=0, hal="left", val ="baseline") { // position text normal to z axis
   a =(h<0)?180:0;
@@ -609,10 +595,10 @@ cutang = 360-sectang;
       cube(size= [abs(radius),abs(radius),abs(depth)], center =false);
   }  
   module cutsect () {
-    if(sectang >270) {
+    if (sectang >270) {
       difference () {
         cutcube();
-        rotz(-cutang) 
+        rotz (-cutang) 
           cutcube();
       }
     }  
@@ -672,17 +658,17 @@ cutang = 360-sectang;
   }
 }
 
-//--- Profiles ------------------------------------------------------------------
+//--- Profiles ------------------------------------
 // profile_angle (30, 30, 2, -80) ;
 module profile_angle (legW, legH, thickness, length) { // length could be negative
-	mv = (length<0)?length:0;
-	tsl(0,0,mv)
-		linear_extrude (height=abs(length)) 
-			difference () {
-				square([legW,legH]);
-				tsl(thickness,thickness) 
-					square ([legW,legH]);
-			}
+  mv = (length<0)?length:0;
+  tsl(0,0,mv)
+    linear_extrude (height=abs(length)) 
+      difference () {
+        square ([legW,legH]);
+        tsl(thickness,thickness) 
+          square ([legW,legH]);
+      }
 }
 
 //profile_T(20,20,1.5, 100);
@@ -694,7 +680,30 @@ module profile_T (width, height, thickness, length) { // length could be negativ
       polygon(points=[[-w,0],[w,0],[w,thickness],[thickness/2,thickness],[thickness/2,height],[-thickness/2,height],[-thickness/2,thickness],[-w,thickness]]);
 }
 
-//== PART III : OPERATORS =======================================
+//----------------------------------------
+module profile_rectangle (wd,ht, thk, length) { // length could be negative
+  mv = (length<0)?length:0;
+  tsl(0,0,mv)
+    linear_extrude (height=abs(length)) 
+      difference () {
+        square ([ht,wd]);
+        tsl(thk,thk) 
+          square ([ht-2*thk,wd-2*thk]);
+      }  
+}
+//-----------------------------------------
+module profile_u (wd,ht, thk, length) { // length could be negative
+  mv = (length<0)?length:0;
+  tsl(0,0,mv)
+    linear_extrude (height=abs(length)) 
+      difference () {
+        square ([ht,wd]);
+        tsl(thk,thk) 
+          square ([ht-2*thk,wd]);
+      }  
+}
+
+//== PART III : OPERATORS =======================   
 //aliases
 module u() {union() children();} // union alias
  
@@ -706,8 +715,8 @@ module diff () {  // difference alias
 }
 
 //rotation and translations without brackets - 
-module rot (x,y=0,z=0) {rotate([x,y,z]) children();}
-module r (x,y=0,z=0) {rotate([x,y,z]) children();}
+module rot  (x,y=0,z=0) {rotate([x,y,z]) children();}
+module r  (x,y=0,z=0) {rotate([x,y,z]) children();}
 module rotz (z) {rotate([0,0,z]) children();}
 module tsl (mx,my=0,mz=0) {translate([mx,my,mz]) children();}
 module t (mx,my=0,mz=0) {translate([mx,my,mz]) children();}
@@ -715,46 +724,46 @@ module tslz (mz) {translate ([0,0,mz]) children();}
 
 // for a delta, everything is rotated three times at 120°, so an operator for that 
 module rot120 (a=0) {
-	for(i=[0,120,240])
-		rotate([0,0,i+a])
-			children();
+  for(i=[0,120,240]) rotate([0,0,i+a]) children();
 }
 
 module mirrorx (mi=true) { // parameter helps in conditional mirroring
-	mm = (mi)?1:0;
-	mirror([mm,0,0])
-		children();
+  mm = (mi)?1:0;
+  mirror([mm,0,0]) children();
 }
 module mirrory (mi=true) {
-	mm = (mi)?1:0;
-	mirror([0,mm,0])
-		children();
+  mm = (mi)?1:0;
+  mirror([0,mm,0]) children();
 }
 module mirrorz (mi=true) {
-	mm = (mi)?1:0;
-	mirror([0,0,mm])
-		children();
+  mm = (mi)?1:0;
+  mirror([0,0,mm]) children();
 }
 
-module dmirrorx (dup=true, x=0) { // duplicate and mirror
-	if (dup) 
+module dmirrorx (dup=true, x=0, nmirr=dmirr_s) { // duplicate and mirror
+  if(dup||!nmirr)
 		tsl(x) children();
-	mirror([1,0,0])
-		tsl(x) children();  
+	if(dup||nmirr)
+		mirror ([1,0,0]) tsl(x) children();  
 }
-module dmirrory (dup=true, y=0) {
-  if (dup) tsl(0,y) children();
-  mirror ([0,1,0]) tsl(0,y) children();
+module dmirrory (dup=true, y=0, nmirr=dmirr_s) {
+  if(dup||!nmirr)
+		tsl(0,y) children();
+	if(dup||nmirr)
+		mirror([0,1,0])
+			tsl(0,y) children();
 }
-module dmirrorz (dup=true, z=0) {
-  if (dup) tsl(0,0,z) children();
-  mirror ([0,0,1]) tsl(0,0,z) children();
+module dmirrorz (dup=true, z=0, nmirr=dmirr_s) {
+	if(dup||!nmirr)
+		tsl(0,0,z) children();
+	if(dup||nmirr)
+		mirror ([0,0,1])
+			tsl(0,0,z) children();
 }
 
 module duplMirror (x,y,z) {//mirror AND maintain the base- beware, OpenSCAD is not iterative
-	children();
-	mirror ([x,y,z])
-		children();
+  children();
+  mirror ([x,y,z]) children();
 }
 
 module dupl (vct, nb=1) { // duplicate object at vector distance
@@ -793,29 +802,24 @@ module lduply (interval, length, x=0,y=0,z=0) {
 }
 
 module lduplz (interval, length, x=0,y=0,z=0) {
-	nb = sign(length)*floor(abs(length)/abs(interval));
-	sp=(interval<0)?length/nb:interval;
-	for(i=[0:nb])
-		tsl(x,y,z+i*sp)
-			children();
+  nb = sign(length)*floor(abs(length)/abs(interval));
+  sp=(interval<0)?length/nb:interval;
+  for (i=[0:nb]) tsl(x,y,z+i*sp) children();
 }
 
 module drotz (angle, nb=1, initial=0) { // polar duplication rotating around Z axis
-	for(i=[0:nb])
-		rotz(angle*i+initial)
-			children();
+  for (i=[0:nb])
+    rotz (angle*i+initial) children();
 }
 
 module droty (angle, nb=1, initial=0) {
-	for(i=[0:nb])
-		rot(0,angle*i+initial)
-			children();
+  for (i=[0:nb])
+    rot (0,angle*i+initial) children();
 }
 
 module drotx (angle, nb=1, initial=0) {
-	for(i=[0:nb])
-		rot(angle*i+initial)
-			children();
+  for (i=[0:nb])
+    rot (angle*i+initial) children();
 }
 
 //segz (2,2, 0,-5,200,-5);
@@ -825,36 +829,31 @@ module drotx (angle, nb=1, initial=0) {
 //Translation only on main axis, others are the rectangle parameters
 //usage: quady (20,0,50) cylx(3,5); 
 module quadx (x=0,y,z) {
-	duplMirror(0,0,1) {
-		translate([x,y,z]) children();
-			mirror([0,1,0])
-				translate ([x,y,z])
-					children();
-	}
+  duplMirror(0,0,1) {
+    translate ([x,y,z]) children();
+    mirror ([0,1,0])
+      translate ([x,y,z]) children();
+  }    
 }
 
 module quady (x,y=0,z) {
-	duplMirror(0,0,1) {
-		translate ([x,y,z])
-			children();
-		mirror ([1,0,0])
-			translate ([x,y,z])
-				children();
-	}
+  duplMirror(0,0,1) {
+    translate ([x,y,z]) children();
+    mirror ([1,0,0])
+      translate ([x,y,z]) children();
+  }  
 }
 module quadz (x,y,z=0) { // create four blocs at -x/-x and +y/-y (mirrored)
-	duplMirror(0,1,0) {
-		translate ([x,y,z])
-			children();
-		mirror([1,0,0])
-			translate ([x,y,z])
-				children();
-	}
+  duplMirror(0,1,0) {
+    translate ([x,y,z]) children();
+    mirror ([1,0,0])
+      translate ([x,y,z]) children();
+  }
 }
 
-//== PART IV : MISCELLANEOUS ==========================
+//== PART IV : MISCELLANEOUS =====================
 
-//-- Miscellaneous Modules -------------
+//-- Miscellaneous Modules ---------------
 module dome (d,ht,x,y,z){ // origin base of dome - rise in 'z' axis
   mv = (z==undef)?0:z;
   Sph_Rd = (ht*ht + d*d/4) / (2*ht);
@@ -866,22 +865,21 @@ module dome (d,ht,x,y,z){ // origin base of dome - rise in 'z' axis
     }
 }
 
-module echo_camera () {// Echo camera variables on console
-	echo("Camera distance: ",$vpd); 
-	echo("Camera translation vector: ",$vpt);
-	echo("Camera rotation vector: ",$vpr);
+module echo_camera () { // Echo camera variables on console
+  echo ("Camera distance: ",$vpd); 
+  echo ("Camera translation vector: ",$vpt);  
+  echo ("Camera rotation vector: ",$vpr);
 }
 
 module segz (d,depth, x1,y1,x2,y2) { //extrude rounded segment
-	linear_extrude(height=depth, center=false)
-		hull () {
-			tsl(x1,y1) circle(d=d);
-			tsl(x2,y2) circle(d=d);
-		}
+  linear_extrude(height=depth, center=false)  
+    hull () {tsl(x1,y1) circle (d=d); tsl(x2,y2) circle(d=d);}
 }
 
-//-- color modules ----------------------
+//-- color modules ---------------------------
 module black() {color ("black") children();}
+//black color is problematic in OpenScad as you can't view shapes, so a not completely black color is created and called 'dark'
+module dark() {color([0.22,0.22,0.22]) children();}
 module white() {color ("white") children();}
 module silver(){color ("silver") children();}
 module gray()  {color ("gray") children();}

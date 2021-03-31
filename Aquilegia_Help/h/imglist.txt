@@ -1,0 +1,13 @@
+imglist
+Image list
+Metadata for images- default.png contains default values
+See http://aquilegia.blue/#hlp/images_list
+(:nosearch:)(:notoc:)
+
+This list shall contains metadata of the documentation images. If an image is not listed or did not have own metadata, the defaults listed in 'default.png' are used.
+'default.png' is a fictive image and shall not exists on your system.
+
+default.png
+auth:Pierre ROUZEAU, license:cc BY-SA 4.0, instructions: see http://rouzeau.net/bentsimh
+
+
