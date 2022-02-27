@@ -38,10 +38,9 @@ The trike/quad steering geometry part was made from scratch.
 
 This application need to have prealably installed OpenSCAD (a free parametric
  3D modeler), see here:
-* http://www.openscad.org/downloads.html#snapshots
-Snapshot versions of OpenScad are recommended as they are frequently updated
- and are reliable.
-*You shall at least use the last official version (2021.01).
+*http://www.openscad.org/downloads.html
+Use 2021.01 version. Snapshot/nightly versions of OpenScad shall NOT be used 
+as they no longer work and they will crush the dataset file.
 *All files shall be installed in a directory on your computer, though you
  don't really need the 'Images' directory to run the app.
 

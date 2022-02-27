@@ -19,7 +19,7 @@ Main evolutions since first issue are possibility to create a fairing,
  
 Details in "Readme_first.txt"
 
-It uses OpenSCAD as 3D modeler engine.
+It uses OpenSCAD as 3D modeler engine - Use only 2021.01 version and NOT snapshot/nightly -
 
 To install OpenSCAD applications, see http://rouzeau.net/OpenSCADEn/Applications
 

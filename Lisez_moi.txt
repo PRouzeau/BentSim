@@ -44,10 +44,10 @@ d'une page blanche.
 
 Cette application nécessite d’avoir installé ‘Openscad’ (un modeleur 3D
  paramétrique gratuit), voir ici:
-* http://www.openscad.org/downloads.html#snapshots
-Les versions de développement 'snapshot versions' sont a préférer car 
-elles sont révisées souvent et elles sont fiables.
-La version minimale officielle d'Openscad à utiliser est la 2021.01 .
+* http://www.openscad.org/downloads.html
+Utiliser la version 2021.01. Les versions de développement 
+'snapshot/nightly' ne doivent PAS être utilisées suite à la suppression de
+certaines fonctionnalités.
 Vous devez installer tous les fichiers dans un répertoire sur votre
  ordinateur, bien que vous n'ayez pas vraiment besoin du répertoire
  'Images' pour faire fonctionner l'application.
